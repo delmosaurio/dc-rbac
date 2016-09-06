@@ -8,6 +8,8 @@
 // password
 // salt
 // user_state
+// first_name
+// last_name
 export default function(sequelize, DataTypes) {
   return sequelize.define('users', {
     user_id: {
@@ -49,6 +51,14 @@ export default function(sequelize, DataTypes) {
       type: DataTypes.ENUM('verifying', 'enabled', 'disabled'),
       allowNull: false,
       defaultValue: "verifying",
+    },
+    first_name: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    last_name: {
+      type: DataTypes.STRING,
+      allowNull: true,
     },
   }, {
     tableName: 'users',
