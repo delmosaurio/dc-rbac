@@ -2,6 +2,7 @@ import Security from './security';
 import Q from 'q';
 import Models from './models/';
 import Sequelize from 'sequelize';
+import moment from 'moment';
 
 /**
  * La clase DcRbac encapsula los metodos necesario
@@ -35,7 +36,7 @@ export default class DcRbac {
 
     this.salt = ops.salt || '0198273498327465';
 
-    this.cipher = new Security({ salt: this.salt});
+    this.security = new Security({ salt: this.salt});
     
     this.sequelize = new Sequelize(db.database, db.user, db.pwd, {
       dialect: "postgres",
@@ -110,6 +111,37 @@ export default class DcRbac {
   }
 
   /**
+   * Agrega una nueva applicación.
+   *
+   * Veasé Modelo RBAC [applications]
+   * 
+   * @param {Object} object Objecto con información de la application
+   * @promise {Object}     Q.promise
+   */
+  addApplication(obj){
+    var def = Q.defer();
+
+    var application_name = obj.application_name;
+
+    var dbObj = {
+      application_name: application_name
+    };
+
+    this.sequelize.transaction(t => {
+      return this.models.applications
+        .create(dbObj)
+        .then(o => {
+          def.resolve(o);
+        })
+        .catch(err => {
+          def.reject(err);
+        });
+    });
+
+    return def.promise;
+  }
+
+  /**
    * Agrega un nuevo object de aplicación.
    *
    * Veasé Modelo RBAC [objects]
@@ -121,9 +153,11 @@ export default class DcRbac {
     var def = Q.defer();
 
     var object_name = obj.object_name;
+    var application_id_applications = obj.application_id_applications;
 
     var dbObj = {
-      object_name: object_name
+      object_name: object_name,
+      application_id_applications: application_id_applications
     };
 
     this.sequelize.transaction(t => {
@@ -131,6 +165,50 @@ export default class DcRbac {
         .create(dbObj)
         .then(o => {
           def.resolve(o);
+        })
+        .catch(err => {
+          def.reject(err);
+        });
+    });
+
+    return def.promise;
+  }
+
+  /**
+   * Agrega un token.
+   *
+   * Veasé Modelo RBAC [token]
+   * 
+   * @param {Object} object Objecto con información del token
+   * @promise {Object}     Q.promise
+   */
+  createToken(obj){
+    var def = Q.defer();
+
+    let user_id_users = obj.user_id_users;
+    let code = this.security.randomCode();
+    let days = days === undefined ? 1 : obj.days;
+    let token_salt = this.security.radomSalt();
+
+    let creation = new Date();
+    let expiration = moment(creation).add(days, 'days');
+
+    let token = this.security.encrypt(code);
+    let type = 'activation';
+
+    let dbObj = {
+      token: token,
+      user_id_users: user_id_users,
+      type: type,
+      expiration: expiration,
+      token_salt: token_salt
+    };
+
+    this.sequelize.transaction(t => {
+      return this.models.tokens
+        .create(dbObj)
+        .then(t => {
+          def.resolve({ token: t, code: code});
         })
         .catch(err => {
           def.reject(err);
@@ -158,8 +236,8 @@ export default class DcRbac {
     let signon_type = user.signon_type || 'local';
     let first_name = user.first_name || '';
     let last_name = user.last_name || '';
-    let salt = this.cipher.radomSalt();
-    let pwd = this.cipher.composePassword(user.password, salt);
+    let salt = this.security.radomSalt();
+    let pwd = this.security.composePassword(user.password, salt);
 
     var dbUser = {
       //user_id
@@ -170,7 +248,7 @@ export default class DcRbac {
       email: user.email,
       password: pwd,
       signon_type: signon_type,
-      salt: salt,
+      user_salt: salt,
       user_state: 'verifying' // need to activate
     };
 
@@ -566,7 +644,7 @@ export default class DcRbac {
    */
   mapUserPublic(u){
     delete u.password;
-    delete u.salt;
+    delete u.user_salt;
     u.profile = { profile_id: u.profile_id_profiles };
     return u;
   }

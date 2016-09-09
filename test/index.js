@@ -3,7 +3,7 @@ var DcRbac = require('../dist').default;
 
 describe('DcRbac', function() {
 
-  var _user, _object, _role, _profile;
+  var _user, _object, _role, _profile, _application;
 
   describe('#constructor()', function() {
     it('should return new instance', function(done) {
@@ -15,7 +15,7 @@ describe('DcRbac', function() {
 
   describe('#addProfile()', function() {
     var rb = new DcRbac();
-    var s = rb.cipher.radomSalt().substring(0, 10);
+    var s = rb.security.radomSalt().substring(0, 10);
 
     it('should be create a new profile', function(done) {
       rb
@@ -45,7 +45,7 @@ describe('DcRbac', function() {
 
   describe('#createUser()', function() {
     var rb = new DcRbac({logging: false});
-    var s = rb.cipher.radomSalt().substring(0, 10);
+    var s = rb.security.radomSalt().substring(0, 10);
 
     it('should be create a new user', function(done) {
       rb
@@ -83,9 +83,27 @@ describe('DcRbac', function() {
     });
   });
 
+  describe('#createToken()', function() {
+    var rb = new DcRbac();
+    var s = rb.security.radomSalt().substring(0, 10);
+
+    it('should be create a token for a user', function(done) {
+      rb
+        .createToken({ user_id_users: _user.dataValues.user_id })
+        .then(function(o){
+          assert.equal(true, (typeof o.token === 'object'));
+          assert.equal(true, (typeof o.code === 'string'));
+          done();
+        })
+        .catch(function(err) {
+          done(err);
+        });
+    });
+  });
+
   describe('#addRole()', function() {
     var rb = new DcRbac();
-    var s = rb.cipher.radomSalt().substring(0, 10);
+    var s = rb.security.radomSalt().substring(0, 10);
 
     it('should be create a new role', function(done) {
       rb
@@ -113,13 +131,43 @@ describe('DcRbac', function() {
     });
   });
 
+  describe('#addApplication()', function() {
+    var rb = new DcRbac();
+    var s = rb.security.radomSalt().substring(0, 10);
+
+    it('should be create a new application', function(done) {
+      rb
+        .addApplication({ application_name: s })
+        .then(function(o){
+          _application = o;
+          assert.equal(true, (typeof o === 'object'));
+          done();
+        })
+        .catch(function(err) {
+          done(err);
+        });
+    });
+
+    it('should be crash when add a application with the same name', function(done) {
+      rb
+        .addApplication({ application_name: s })
+        .then(function(){
+          done(new Error('Unique contraint wrong'));
+        })
+        .catch(function(err) {
+          assert.equal(true, err !== undefined);
+          done();
+        });
+    });
+  });
+
   describe('#addObject()', function() {
     var rb = new DcRbac();
-    var s = rb.cipher.radomSalt().substring(0, 10);
+    var s = rb.security.radomSalt().substring(0, 10);
 
     it('should be create a new object', function(done) {
       rb
-        .addObject({ object_name: s })
+        .addObject({ object_name: s, application_id_applications: _application.dataValues.application_id })
         .then(function(o){
           _object = o;
           assert.equal(true, (typeof o === 'object'));
@@ -132,7 +180,7 @@ describe('DcRbac', function() {
 
     it('should be crash when add a object with the same name', function(done) {
       rb
-        .addObject({ object_name: s })
+        .addObject({ object_name: s, application_id_applications: _application.application_id })
         .then(function(){
           done(new Error('Unique contraint wrong'));
         })

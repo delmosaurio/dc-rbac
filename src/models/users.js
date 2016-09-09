@@ -6,7 +6,7 @@
 // username
 // email
 // password
-// salt
+// user_salt
 // user_state
 // first_name
 // last_name
@@ -43,7 +43,7 @@ export default function(sequelize, DataTypes) {
       type: DataTypes.STRING,
       allowNull: true,
     },
-    salt: {
+    user_salt: {
       type: DataTypes.STRING,
       allowNull: true,
     },

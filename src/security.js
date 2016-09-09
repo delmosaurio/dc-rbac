@@ -1,6 +1,8 @@
 'use strict';
 
 import {MCrypt} from 'mcrypt';
+import base58 from 'bs58';
+import crypto from 'crypto';
 
 /**
  * Clase con utilidades de Criptografia
@@ -73,5 +75,27 @@ export default class Security {
     let hashedPassword = this.encrypt(plainTextPassword);
     let pwd = salt+hashedPassword;
     return this.encrypt(pwd);
+  }
+
+  /**
+   * Compone un token aleatoreo
+   * 
+   * @param  {Integer} randomBytes Cantidad de bytes
+   * @return {String}              Token
+   */
+  randomToken(randomBytes) {
+    randomBytes = randomBytes || 16;
+    var buf = crypto.randomBytes(randomBytes);
+
+    return base58.encode(buf);
+  }
+
+  /**
+   * Compone un token de 6 bytes
+   * 
+   * @return {String}   Token
+   */
+  randomCode() {
+    return this.randomToken(6);
   }
 }

@@ -10,6 +10,8 @@ import users from './users';
 import usersObjects from './users_objects';
 import usersRoles from './users_roles';
 import Users from './users';
+import Applications from './applications';
+import Tokens from './tokens';
 
 export default class Models {
 
@@ -23,6 +25,8 @@ export default class Models {
     this.users = users(sequelize, DataTypes);
     this.usersObjects = usersObjects(sequelize, DataTypes);
     this.usersRoles = usersRoles(sequelize, DataTypes);
+    this.applications = Applications(sequelize, DataTypes);
+    this.tokens = Tokens(sequelize, DataTypes);
   }
 
 }
