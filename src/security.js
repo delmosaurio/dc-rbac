@@ -7,7 +7,7 @@ import {MCrypt} from 'mcrypt';
  *
  * Algoritmo utilizado [blowfish]
  */
-export default class Cipher {
+export default class Security {
   /**
    * Crea una nueva instancia de Cipher con opciones:
    *   salt -- private salt

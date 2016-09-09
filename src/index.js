@@ -1,4 +1,4 @@
-import Cipher from './cipher';
+import Security from './security';
 import Q from 'q';
 import Models from './models/';
 import Sequelize from 'sequelize';
@@ -35,7 +35,7 @@ export default class DcRbac {
 
     this.salt = ops.salt || '0198273498327465';
 
-    this.cipher = new Cipher({ salt: this.salt});
+    this.cipher = new Security({ salt: this.salt});
     
     this.sequelize = new Sequelize(db.database, db.user, db.pwd, {
       dialect: "postgres",
