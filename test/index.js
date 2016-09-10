@@ -101,7 +101,7 @@ describe('DcRbac', function() {
     it('should be error with the wrong password', function(done) {
 
       rb.authenticate(_user, 'wrongpassword', function(authError, authenticated) {
-        assert.equal(true, authError !== null );
+        assert.equal(true, authenticated  === false );
         done();
       });
 

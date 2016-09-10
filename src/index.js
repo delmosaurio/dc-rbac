@@ -646,6 +646,8 @@ export default class DcRbac {
 
         if (composePassword === savedpwd){
           return cb(null, true);
+        } else {
+          return cb(null, false);
         }
 
         return cb(new Error('Wrong password'));
