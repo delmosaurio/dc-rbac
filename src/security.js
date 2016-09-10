@@ -19,10 +19,10 @@ export default class Security {
    */
   constructor(ops){
     ops = ops || {};
-    if (!ops.salt){
-      throw new Error(`Unknown salt`);
+    if (!ops.secret){
+      throw new Error(`Unknown secret`);
     }
-    this.key = ops.salt;
+    this.key = ops.secret;
     
   }
 

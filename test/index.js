@@ -3,7 +3,7 @@ var DcRbac = require('../dist').default;
 
 describe('DcRbac', function() {
 
-  var _user, _object, _role, _profile, _application;
+  var _user, _object, _role, _profile, _application, _password;
 
   describe('#constructor()', function() {
     it('should return new instance', function(done) {
@@ -47,6 +47,8 @@ describe('DcRbac', function() {
     var rb = new DcRbac({logging: false});
     var s = rb.security.radomSalt().substring(0, 10);
 
+    _password = s;
+
     it('should be create a new user', function(done) {
       rb
         .createUser({
@@ -80,6 +82,29 @@ describe('DcRbac', function() {
           assert.equal(true, err !== undefined);
           done();
         });
+    });
+  });
+
+  describe('#authenticate()', function() {
+    var rb = new DcRbac({logging: false});
+    var s = rb.security.radomSalt().substring(0, 10);
+
+    it('should be authenticate with the password', function(done) {
+
+      rb.authenticate(_user.dataValues, _password, function(authError, authenticated) {
+        assert.equal(true, authenticated);
+        done();
+      });
+
+    });
+
+    it('should be error with the wrong password', function(done) {
+
+      rb.authenticate(_user.dataValues, 'wrongpassword', function(authError, authenticated) {
+        assert.equal(true, authError !== null );
+        done();
+      });
+
     });
   });
 

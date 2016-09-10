@@ -34,9 +34,9 @@ export default class DcRbac {
     db.pwd = db.pwd || '';
     let logging = ops.logging || false;
 
-    this.salt = ops.salt || '0198273498327465';
+    this.secret = ops.secret || '0198273498327465';
 
-    this.security = new Security({ salt: this.salt});
+    this.security = new Security({ secret: this.secret});
     
     this.sequelize = new Sequelize(db.database, db.user, db.pwd, {
       dialect: "postgres",
@@ -629,6 +629,16 @@ export default class DcRbac {
       });
 
     return def.promise;
+  }
+
+  authenticate(user, pwd, cb){
+    var composePassword = this.security.composePassword(pwd, user.user_salt);
+
+    if (composePassword === user.password){
+      return cb(null, true);
+    }
+
+    return cb(new Error('Wrong password'));
   }
 
   //
