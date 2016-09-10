@@ -256,7 +256,7 @@ export default class DcRbac {
       return this.models.users
         .create(dbUser)
         .then(u => {
-          def.resolve(u);
+          def.resolve(this.mapUserPublic(u.dataValues));
         })
         .catch(err => {
           def.reject(err);
@@ -632,13 +632,27 @@ export default class DcRbac {
   }
 
   authenticate(user, pwd, cb){
-    var composePassword = this.security.composePassword(pwd, user.user_salt);
+    this
+      .models.users
+      .findOne({ where: {user_id: user.user_id} })
+      .then(res => {
+        if (!res || !res.dataValues){
+          def.resolve(null);
+        }
+        var savedpwd = res.dataValues.password;
+        var salt = res.dataValues.user_salt;
+        
+        var composePassword = this.security.composePassword(pwd, salt);
 
-    if (composePassword === user.password){
-      return cb(null, true);
-    }
+        if (composePassword === savedpwd){
+          return cb(null, true);
+        }
 
-    return cb(new Error('Wrong password'));
+        return cb(new Error('Wrong password'));
+      })
+      .catch(err => {
+        cb(err)
+      });
   }
 
   //

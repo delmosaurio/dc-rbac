@@ -91,7 +91,7 @@ describe('DcRbac', function() {
 
     it('should be authenticate with the password', function(done) {
 
-      rb.authenticate(_user.dataValues, _password, function(authError, authenticated) {
+      rb.authenticate(_user, _password, function(authError, authenticated) {
         assert.equal(true, authenticated);
         done();
       });
@@ -100,7 +100,7 @@ describe('DcRbac', function() {
 
     it('should be error with the wrong password', function(done) {
 
-      rb.authenticate(_user.dataValues, 'wrongpassword', function(authError, authenticated) {
+      rb.authenticate(_user, 'wrongpassword', function(authError, authenticated) {
         assert.equal(true, authError !== null );
         done();
       });
@@ -114,7 +114,7 @@ describe('DcRbac', function() {
 
     it('should be create a token for a user', function(done) {
       rb
-        .createToken({ user_id_users: _user.dataValues.user_id })
+        .createToken({ user_id_users: _user.user_id })
         .then(function(o){
           assert.equal(true, (typeof o.token === 'object'));
           assert.equal(true, (typeof o.code === 'string'));
@@ -221,7 +221,7 @@ describe('DcRbac', function() {
 
     it('should be revoke a object for a user', function(done) {
       rb
-        .revokeUserObject(parseInt(_user.dataValues.user_id), parseInt(_object.dataValues.object_id), 8,0)
+        .revokeUserObject(parseInt(_user.user_id), parseInt(_object.dataValues.object_id), 8,0)
         .then(function(){
           done();
         })
@@ -236,7 +236,7 @@ describe('DcRbac', function() {
 
     it('should be get object user access', function(done) {
       rb
-        .accessUserObject(parseInt(_user.dataValues.user_id), parseInt(_object.dataValues.object_id))
+        .accessUserObject(parseInt(_user.user_id), parseInt(_object.dataValues.object_id))
         .then(function(){
           done();
         })
@@ -251,7 +251,7 @@ describe('DcRbac', function() {
 
     it('should be unlink a object for a user', function(done) {
       rb
-        .unlinkUserObject(parseInt(_user.dataValues.user_id), parseInt(_object.dataValues.object_id))
+        .unlinkUserObject(parseInt(_user.user_id), parseInt(_object.dataValues.object_id))
         .then(function(){
           done();
         })
@@ -266,7 +266,7 @@ describe('DcRbac', function() {
 
     it('should be revoke a object for a user', function(done) {
       rb
-        .revokeUserObject(parseInt(_user.dataValues.user_id), parseInt(_object.dataValues.object_id), 8,0)
+        .revokeUserObject(parseInt(_user.user_id), parseInt(_object.dataValues.object_id), 8,0)
         .then(function(){
           done();
         })
@@ -495,7 +495,7 @@ describe('DcRbac', function() {
 
     it('should be get the objects for a user', function(done) {
       rb
-        .getObjectsForUser(_user.dataValues.user_id)
+        .getObjectsForUser(_user.user_id)
         .then(function(res){
           done();
         })
