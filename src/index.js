@@ -285,6 +285,75 @@ export default class DcRbac {
   }
 
   /**
+   * Habilita un usuario
+   * 
+   * @param  {[type]} userId 
+   * @promise {Object}     Q.promise
+   */
+  enableUser(userId){
+    var def = Q.defer();
+
+    this
+      .getUserById(userId)
+      .then(user => {
+        if (!user){
+          return def.reject(new Error('Unknown user'));
+        }
+
+        this.sequelize.transaction(t => {
+          return this.models.users
+            .update({ user_state: 'enabled' }, { where: { user_id: userId}})
+            .then(affectedRows => {
+              def.resolve(affectedRows);
+            })
+            .catch(err => {
+              def.reject(err);
+            });
+        });
+      })
+      .catch(err => {
+        def.reject(err);
+      })
+    
+    return def.promise;
+  }
+
+  /**
+   * Deshabilita un usuario
+   * 
+   * @param  {[type]} userId 
+   * @promise {Object}     Q.promise
+   */
+  disableUser(userId){
+    var def = Q.defer();
+
+    this
+      .getUserById(userId)
+      .then(user => {
+        if (!user){
+          return def.reject(new Error('Unknown user'));
+        }
+
+        this.sequelize.transaction(t => {
+          return this.models.users
+            .update({ user_state: 'disabled' }, { where: { user_id: userId}})
+            .then(affectedRows => {
+              def.resolve(affectedRows);
+            })
+            .catch(err => {
+              def.reject(err);
+            });
+        });
+      })
+      .catch(err => {
+        def.reject(err);
+      })
+    
+    return def.promise;
+  }
+
+
+  /**
    * Actualiza el acceso para un usuario y un objecto.
    * 
    * @param  {Integer} user_id      

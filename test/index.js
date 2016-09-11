@@ -85,6 +85,40 @@ describe('DcRbac', function() {
     });
   });
 
+  describe('#disableUser()', function() {
+    var rb = new DcRbac();
+    var s = rb.security.radomSalt().substring(0, 10);
+
+    it('should be disable a user', function(done) {
+      rb
+        .disableUser(_user.user_id)
+        .then(function(u){
+          assert.equal(true, (typeof u === 'object'));
+          done();
+        })
+        .catch(function(err) {
+          done(err);
+        });
+    });
+  });
+
+  describe('#enableUser()', function() {
+    var rb = new DcRbac();
+    var s = rb.security.radomSalt().substring(0, 10);
+
+    it('should be enable a user', function(done) {
+      rb
+        .enableUser(_user.user_id)
+        .then(function(u){
+          assert.equal(true, (typeof u === 'object'));
+          done();
+        })
+        .catch(function(err) {
+          done(err);
+        });
+    });
+  });
+
   describe('#authenticate()', function() {
     var rb = new DcRbac({logging: false});
     var s = rb.security.radomSalt().substring(0, 10);
