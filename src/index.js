@@ -218,6 +218,22 @@ export default class DcRbac {
     return def.promise;
   }
 
+  getTokenByHash(hash){
+    var def = Q.defer();
+
+    this
+      .models.tokens
+      .findOne({ where: { token: hash } })
+      .then(token => {
+        def.resolve(token);
+      })
+      .catch(err => {
+        def.reject(err);
+      });
+
+    return def.promise;   
+  }
+
   /**
    * Agrega un nuevo usuario.
    *

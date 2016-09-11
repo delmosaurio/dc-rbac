@@ -3,7 +3,7 @@ var DcRbac = require('../dist').default;
 
 describe('DcRbac', function() {
 
-  var _user, _object, _role, _profile, _application, _password;
+  var _user, _object, _role, _profile, _application, _password, _token;
 
   describe('#constructor()', function() {
     it('should return new instance', function(done) {
@@ -116,8 +116,38 @@ describe('DcRbac', function() {
       rb
         .createToken({ user_id_users: _user.user_id })
         .then(function(o){
+          _token = o.token;
           assert.equal(true, (typeof o.token === 'object'));
           assert.equal(true, (typeof o.code === 'string'));
+          done();
+        })
+        .catch(function(err) {
+          done(err);
+        });
+    });
+  });
+
+  describe('#getTokenByHash()', function() {
+    var rb = new DcRbac();
+    var s = rb.security.radomSalt().substring(0, 10);
+
+    it('should be get a token by hash', function(done) {
+      rb
+        .getTokenByHash(_token.dataValues.token)
+        .then(function(t){
+          assert.equal(true, (typeof t === 'object'));
+          done();
+        })
+        .catch(function(err) {
+          done(err);
+        });
+    });
+
+    it('should be get a token by encrypting de code', function(done) {
+      rb
+        .getTokenByHash(rb.security.encrypt(_token.dataValues.code))
+        .then(function(t){
+          assert.equal(true, (typeof t === 'object'));
           done();
         })
         .catch(function(err) {
