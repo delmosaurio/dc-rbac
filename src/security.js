@@ -1,9 +1,10 @@
 'use strict';
 
-import {MCrypt} from 'mcrypt';
+import md5 from 'md5';
 import base58 from 'bs58';
 import crypto from 'crypto';
 import bcrypt from 'bcrypt';
+
 
 /**
  * Clase con utilidades de Criptografia
@@ -43,15 +44,7 @@ export default class Security {
    * @return {String}      text encriptado con key
    */
   privateEncrypt(text, key){
-    let blowfish = new MCrypt('blowfish', 'cfb');
-    //let iv = blowfish.generateIv();
-    blowfish.validateKeySize(false);
-    blowfish.open(key);
-    
-    var ciphertext = blowfish.encrypt(text);
-    var res = ciphertext.toString('base64')
-
-    return res.toString('base64');
+    return md5(key+text);
   }
 
   /**
