@@ -3,6 +3,7 @@
 import {MCrypt} from 'mcrypt';
 import base58 from 'bs58';
 import crypto from 'crypto';
+import bcrypt from 'bcrypt';
 
 /**
  * Clase con utilidades de Criptografia
@@ -65,16 +66,29 @@ export default class Security {
   }
 
   /**
-   * Compone una contraseña
+   * Genera un nuevo password y salt
+   * @param  {[type]} plainTextPassword [description]
+   * @return {[type]}                   [description]
+   */
+  generatePassword(plainTextPassword){
+    var salt = bcrypt.genSaltSync(this.saltRounds);
+    var hash = bcrypt.hashSync(plainTextPassword, salt);
+
+    return {
+      salt: salt,
+      hash: hash
+    };
+  }
+
+  /**
+   * Compara contraseñas passwords
    * 
    * @param  {String} plainTextPassword 
-   * @param  {String} salt              
+   * @param  {String} hash hashed              
    * @return {String}                   
    */
-  composePassword(plainTextPassword, salt){
-    let hashedPassword = this.encrypt(plainTextPassword);
-    let pwd = salt+hashedPassword;
-    return this.encrypt(pwd);
+  comparePassword(plainTextPassword, hash){
+    return bcrypt.compareSync(plainTextPassword, hash);
   }
 
   /**

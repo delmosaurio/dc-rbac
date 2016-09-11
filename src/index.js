@@ -236,8 +236,10 @@ export default class DcRbac {
     let signon_type = user.signon_type || 'local';
     let first_name = user.first_name || '';
     let last_name = user.last_name || '';
-    let salt = this.security.radomSalt();
-    let pwd = this.security.composePassword(user.password, salt);
+    var pwdObj = this.security.generatePassword(user.password);
+
+    let salt = pwdObj.salt;
+    let pwd = pwdObj.hash;
 
     var dbUser = {
       //user_id
@@ -641,16 +643,16 @@ export default class DcRbac {
         }
         var savedpwd = res.dataValues.password;
         var salt = res.dataValues.user_salt;
-        
-        var composePassword = this.security.composePassword(pwd, salt);
 
-        if (composePassword === savedpwd){
-          return cb(null, true);
-        } else {
-          return cb(null, false);
+        try{
+          var cp = this.security.comparePassword(pwd, savedpwd);
+
+          return cb(null, cp);
+
+        } catch(err){
+          return cb(err);
         }
-
-        return cb(new Error('Wrong password'));
+       
       })
       .catch(err => {
         cb(err)
