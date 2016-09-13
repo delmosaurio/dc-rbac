@@ -10,6 +10,9 @@
 // user_state
 // first_name
 // last_name
+// google_id
+// account_image
+// account_google_url
 export default function(sequelize, DataTypes) {
   return sequelize.define('users', {
     user_id: {
@@ -57,6 +60,18 @@ export default function(sequelize, DataTypes) {
       allowNull: true,
     },
     last_name: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    google_id: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    account_image: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    account_google_url: {
       type: DataTypes.STRING,
       allowNull: true,
     },

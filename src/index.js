@@ -194,7 +194,7 @@ export default class DcRbac {
     let expiration = moment(creation).add(days, 'days');
 
     let token = this.security.encrypt(code);
-    let type = 'activation';
+    let type = obj.type || 'activation';
 
     let dbObj = {
       token: token,
@@ -208,7 +208,7 @@ export default class DcRbac {
       return this.models.tokens
         .create(dbObj)
         .then(t => {
-          def.resolve({ token: t, code: code});
+          def.resolve({ token: t.dataValues, code: code});
         })
         .catch(err => {
           def.reject(err);
@@ -225,7 +225,10 @@ export default class DcRbac {
       .models.tokens
       .findOne({ where: { token: hash } })
       .then(token => {
-        def.resolve(token);
+        if (!token){
+          return def.resolve(null);  
+        }
+        def.resolve(token.dataValues);
       })
       .catch(err => {
         def.reject(err);
@@ -252,7 +255,12 @@ export default class DcRbac {
     let signon_type = user.signon_type || 'local';
     let first_name = user.first_name || '';
     let last_name = user.last_name || '';
+    let user_state = user.user_state || 'verifying';
     var pwdObj = this.security.generatePassword(user.password);
+
+    var google_id = user.google_id;
+    var account_image = user.account_image;
+    var account_google_url = user.account_google_url;
 
     let salt = pwdObj.salt;
     let pwd = pwdObj.hash;
@@ -267,7 +275,10 @@ export default class DcRbac {
       password: pwd,
       signon_type: signon_type,
       user_salt: salt,
-      user_state: 'verifying' // need to activate
+      user_state: user_state,
+      google_id: user.google_id,
+      account_image: user.account_image,
+      account_google_url: user.account_google_url,
     };
 
     this.sequelize.transaction(t => {
@@ -285,9 +296,49 @@ export default class DcRbac {
   }
 
   /**
+   * Cambia la contraseña y salt del usuario
+   * 
+   * @param  {Integer} userId 
+   * @param  {String} newPassword 
+   * @promise {Object}     Q.promise
+   */
+  changeUserPassword(userId, newPassword){
+    var def = Q.defer();
+
+    this
+      .getUserById(userId)
+      .then(user => {
+        if (!user){
+          return def.reject(new Error('Unknown user'));
+        }
+
+        var pwdObj = this.security.generatePassword(newPassword);
+
+        let salt = pwdObj.salt;
+        let pwd = pwdObj.hash;
+
+        this.sequelize.transaction(t => {
+          return this.models.users
+            .update({ password: pwd, user_salt: salt, }, { where: { user_id: userId}})
+            .then(affectedRows => {
+              def.resolve(affectedRows);
+            })
+            .catch(err => {
+              def.reject(err);
+            });
+        });
+      })
+      .catch(err => {
+        def.reject(err);
+      })
+    
+    return def.promise;
+  }
+
+  /**
    * Habilita un usuario
    * 
-   * @param  {[type]} userId 
+   * @param  {Integer} userId 
    * @promise {Object}     Q.promise
    */
   enableUser(userId){
@@ -321,7 +372,7 @@ export default class DcRbac {
   /**
    * Deshabilita un usuario
    * 
-   * @param  {[type]} userId 
+   * @param  {Integer} userId 
    * @promise {Object}     Q.promise
    */
   disableUser(userId){
@@ -578,6 +629,44 @@ export default class DcRbac {
   }
 
   /**
+   * Obtiene un un usuario por googl_id.
+   * 
+   * @param  {Integer} googlId   
+   * @param  {Boolean} populate Define si se debe obtener el perfil
+   * @promise {Object} Q.promise
+   */
+  getUserByGoogleId(googlId, populate){
+    var def = Q.defer();
+    this
+    .models.users
+    .findOne({ where: {google_id: googlId} })
+    .then(res => {
+      if (!res || !res.dataValues){
+        def.resolve(null);
+      }
+      var u = this.mapUserPublic(res.dataValues);
+      if (!populate){
+        def.resolve(u);
+      } else {
+        this
+          .getProfileById(u.profile_id_profiles)
+          .then(p => {
+            u.profile = p;
+            def.resolve(u);
+          })
+          .catch(e => {
+            def.reject(e);
+          })
+      }
+    })
+    .catch(err => {
+      def.reject(err);
+    });
+
+    return def.promise;
+  }
+
+  /**
    * Obtiene un usuario por username o email
    * @param  {[type]} username username o email
    * @param  {Boolean} populate Define si se debe obtener el perfil
@@ -636,6 +725,44 @@ export default class DcRbac {
         var p = res.dataValues;
         this
           .getRolesForProfile(profileId)
+          .then(roles => {
+            p.roles = roles;
+            def.resolve(p);
+          })
+          .catch(e => {
+            def.reject(e);
+          })
+      }
+    })
+    .catch(err => {
+      def.reject(err);
+    });
+
+    return def.promise;
+  }
+
+  /**
+   * Obtiene un profile por nombre
+   * 
+   * @param  {String} name 
+   * @param  {Boolean} populate Define si se debe obtener lso roles
+   * @promise {Object} Q.promise
+   */
+  getProfileByName(name, populate){
+    var def = Q.defer();
+    this
+    .models.profiles
+    .findOne({ where: {profile_name: name} })
+    .then(res => {
+      if (!res || !res.dataValues){
+        def.resolve(null);
+      }
+      if (!populate){
+        def.resolve(res.dataValues);
+      } else {
+        var p = res.dataValues;
+        this
+          .getRolesForProfile(p.profile_id)
           .then(roles => {
             p.roles = roles;
             def.resolve(p);

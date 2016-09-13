@@ -142,6 +142,38 @@ describe('DcRbac', function() {
     });
   });
 
+  describe('#changeUserPassword()', function() {
+    var rb = new DcRbac();
+    var s = rb.security.radomSalt().substring(0, 10);
+
+    it('should be disable a user', function(done) {
+      rb
+        .changeUserPassword(_user.user_id, 'topsecret')
+        .then(function(u){
+          assert.equal(true, (typeof u === 'object'));
+          done();
+        })
+        .catch(function(err) {
+          done(err);
+        });
+    });
+  });
+
+  describe('#authenticate()', function() {
+    var rb = new DcRbac({logging: false});
+    var s = rb.security.radomSalt().substring(0, 10);
+
+    it('should be authenticate with the new password', function(done) {
+
+      rb.authenticate(_user, 'topsecret', function(authError, authenticated) {
+        assert.equal(true, authenticated);
+        done();
+      });
+
+    });
+    
+  });
+
   describe('#createToken()', function() {
     var rb = new DcRbac();
     var s = rb.security.radomSalt().substring(0, 10);
@@ -150,7 +182,7 @@ describe('DcRbac', function() {
       rb
         .createToken({ user_id_users: _user.user_id })
         .then(function(o){
-          _token = o.token;
+          _token = o;
           assert.equal(true, (typeof o.token === 'object'));
           assert.equal(true, (typeof o.code === 'string'));
           done();
@@ -167,7 +199,7 @@ describe('DcRbac', function() {
 
     it('should be get a token by hash', function(done) {
       rb
-        .getTokenByHash(_token.dataValues.token)
+        .getTokenByHash(_token.token.token)
         .then(function(t){
           assert.equal(true, (typeof t === 'object'));
           done();
@@ -179,7 +211,7 @@ describe('DcRbac', function() {
 
     it('should be get a token by encrypting de code', function(done) {
       rb
-        .getTokenByHash(rb.security.encrypt(_token.dataValues.code))
+        .getTokenByHash(rb.security.encrypt(_token.code))
         .then(function(t){
           assert.equal(true, (typeof t === 'object'));
           done();
@@ -438,6 +470,22 @@ describe('DcRbac', function() {
         .getProfileById(_profile.profile_id, true)
         .then(function(res){
           assert.equal(true, res.profile_id === _profile.profile_id);
+          done();
+        })
+        .catch(function(err) {
+          done(err);
+        });
+    });
+  });
+
+  describe('#getProfileByName()', function() {
+    var rb = new DcRbac({logging: false});
+
+    it('should be get a profile by name', function(done) {
+      rb
+        .getProfileByName(_profile.profile_name, true)
+        .then(function(res){
+          assert.equal(true, res.profile_name === _profile.profile_name);
           done();
         })
         .catch(function(err) {
