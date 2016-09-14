@@ -28,8 +28,8 @@ export default class DcRbac {
   constructor(ops){
     ops = ops || {};
     let db = ops.dbConfig || {};
-    db.database = 'rbac';
-    db.user = 'postgres';
+    db.database = db.database || 'rbac';
+    db.user = db.user || 'postgres';
     db.port = db.port || 5432;
     db.pwd = db.pwd || '';
     let logging = ops.logging || false;
