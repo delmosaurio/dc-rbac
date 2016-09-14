@@ -1,6 +1,6 @@
 {
   "name": "dc-rbac",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Implementation of RBAC model using Postgresql as data layer",
   "main": "dist/index.js",
   "files": [
