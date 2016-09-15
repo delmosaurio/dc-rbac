@@ -1,0 +1,500 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+CAUTION: Do not modify this file unless you know what you are doing.
+         Unexpected results may occur if the code is changed deliberately.
+-->
+<dbmodel pgmodeler-ver="0.8.2" last-position="0,0" last-zoom="1"
+	 default-schema="public" default-owner="postgres">
+<database name="rbac">
+</database>
+
+<schema name="public" fill-color="#e1e1e1" sql-disabled="true">
+</schema>
+
+<usertype name="signon" configuration="enumeration">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<enumeration values="local,google,facebook,twitter,github"/>
+</usertype>
+
+<table name="profiles">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="40" y="320"/>
+	<column name="profile_id" not-null="true">
+		<type name="bigserial"/>
+	</column>
+	<column name="profile_name" not-null="true">
+		<type name="varchar" length="100"/>
+	</column>
+	<column name="profile_description">
+		<type name="text"/>
+	</column>
+	<constraint name="pk_profile" type="pk-constr" table="public.profiles">
+		<columns names="profile_id" ref-type="src-columns"/>
+	</constraint>
+	<constraint name="uq_profiles_profile_name" type="uq-constr" table="public.profiles">
+		<columns names="profile_name" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="roles">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="420" y="420"/>
+	<column name="role_id" not-null="true">
+		<type name="bigserial"/>
+	</column>
+	<column name="role_name" not-null="true">
+		<type name="varchar" length="100"/>
+	</column>
+	<column name="role_description">
+		<type name="text"/>
+	</column>
+	<constraint name="pk_roles" type="pk-constr" table="public.roles">
+		<columns names="role_id" ref-type="src-columns"/>
+	</constraint>
+	<constraint name="uq_roles_role_name" type="uq-constr" table="public.roles">
+		<columns names="role_name" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="objects">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="1120" y="440"/>
+	<column name="object_id" not-null="true">
+		<type name="bigserial"/>
+	</column>
+	<column name="object_name" not-null="true">
+		<type name="varchar" length="100"/>
+	</column>
+	<column name="target">
+		<type name="varchar" length="100"/>
+	</column>
+	<column name="scope_rule">
+		<type name="text"/>
+	</column>
+	<constraint name="pk_objects" type="pk-constr" table="public.objects">
+		<columns names="object_id" ref-type="src-columns"/>
+	</constraint>
+	<constraint name="uq_objects_object_name" type="uq-constr" table="public.objects">
+		<columns names="object_name" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="profiles_roles">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="40" y="420"/>
+	<column name="profile_id_profiles" not-null="true">
+		<type name="integer"/>
+	</column>
+	<column name="role_id_roles" not-null="true">
+		<type name="integer"/>
+	</column>
+	<constraint name="pk_profiles_roles" type="pk-constr" table="public.profiles_roles">
+		<columns names="profile_id_profiles,role_id_roles" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="users_roles">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="420" y="240"/>
+	<column name="user_id_users" not-null="true">
+		<type name="integer"/>
+	</column>
+	<column name="role_id_roles" not-null="true">
+		<type name="integer"/>
+	</column>
+	<constraint name="pk_users_roles" type="pk-constr" table="public.users_roles">
+		<columns names="user_id_users,role_id_roles" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="roles_roles">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="440" y="520"/>
+	<column name="role_id_roles" not-null="true">
+		<type name="integer"/>
+	</column>
+	<column name="roles_role_id" not-null="true">
+		<type name="integer"/>
+	</column>
+	<constraint name="fk_roles_roles" type="pk-constr" table="public.roles_roles">
+		<columns names="roles_role_id,role_id_roles" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<usertype name="account_state" configuration="enumeration">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<enumeration values="verifying,enabled,disabled"/>
+</usertype>
+
+<table name="users">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="20" y="20"/>
+	<column name="user_id" not-null="true">
+		<type name="bigserial"/>
+	</column>
+	<column name="profile_id_profiles" not-null="true">
+		<type name="integer"/>
+	</column>
+	<column name="signon_type" not-null="true" default-value="'local'">
+		<type name="public.signon"/>
+	</column>
+	<column name="username" not-null="true">
+		<type name="varchar" length="100"/>
+	</column>
+	<column name="email" not-null="true">
+		<type name="varchar" length="100"/>
+	</column>
+	<column name="password">
+		<type name="varchar" length="100"/>
+	</column>
+	<column name="user_salt">
+		<type name="varchar" length="100"/>
+	</column>
+	<column name="user_state" not-null="true" default-value="'verifying'">
+		<type name="public.account_state"/>
+	</column>
+	<column name="first_name">
+		<type name="varchar" length="100"/>
+	</column>
+	<column name="last_name">
+		<type name="varchar" length="100"/>
+	</column>
+	<column name="google_id">
+		<type name="varchar" length="100"/>
+	</column>
+	<column name="account_image">
+		<type name="varchar" length="200"/>
+	</column>
+	<column name="account_google_url">
+		<type name="varchar" length="200"/>
+	</column>
+	<column name="created_at" not-null="true">
+		<type name="date"/>
+	</column>
+	<column name="updated_at" not-null="true">
+		<type name="date"/>
+	</column>
+	<constraint name="pk_users" type="pk-constr" table="public.users">
+		<columns names="user_id" ref-type="src-columns"/>
+	</constraint>
+	<constraint name="uq_users_username" type="uq-constr" table="public.users">
+		<columns names="username" ref-type="src-columns"/>
+	</constraint>
+	<constraint name="uq_users_email" type="uq-constr" table="public.users">
+		<columns names="email" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<usertype name="token_type" configuration="enumeration">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<enumeration values="activation,password_change"/>
+</usertype>
+
+<table name="tokens">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="480" y="0"/>
+	<column name="token" not-null="true">
+		<type name="varchar" length="100"/>
+	</column>
+	<column name="user_id_users" not-null="true">
+		<type name="integer"/>
+	</column>
+	<column name="type" not-null="true">
+		<type name="public.token_type"/>
+	</column>
+	<column name="expiration" not-null="true">
+		<type name="date"/>
+	</column>
+	<column name="token_salt" not-null="true">
+		<type name="varchar" length="100"/>
+	</column>
+	<constraint name="pk_tokens" type="pk-constr" table="public.tokens">
+		<columns names="token" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="applications">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="1120" y="120"/>
+	<column name="app_id" not-null="true">
+		<type name="varchar" length="10"/>
+	</column>
+	<column name="app_caption" not-null="true">
+		<type name="varchar" length="100"/>
+	</column>
+	<column name="app_description">
+		<type name="text"/>
+	</column>
+	<constraint name="pk_applications" type="pk-constr" table="public.applications">
+		<columns names="app_id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="actions">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="840" y="20"/>
+	<column name="action_value" not-null="true">
+		<type name="smallint"/>
+	</column>
+	<column name="action_name" not-null="true">
+		<type name="varchar" length="20"/>
+	</column>
+	<constraint name="pk_actions" type="pk-constr" table="public.actions">
+		<columns names="action_value" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="modules">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="1120" y="280"/>
+	<column name="module_id" not-null="true">
+		<type name="bigserial"/>
+	</column>
+	<column name="module_name" not-null="true">
+		<type name="varchar" length="100"/>
+	</column>
+	<column name="module_description">
+		<type name="text"/>
+	</column>
+	<column name="app_id_applications" not-null="true">
+		<type name="varchar" length="10"/>
+	</column>
+	<constraint name="pk_modules" type="pk-constr" table="public.modules">
+		<columns names="module_id" ref-type="src-columns"/>
+	</constraint>
+	<constraint name="uq_modules_module_name" type="uq-constr" table="public.modules">
+		<columns names="module_name" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="roles_operations">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="760" y="400"/>
+	<column name="role_id_roles" not-null="true">
+		<type name="integer"/>
+	</column>
+	<column name="module_id_modules" not-null="true">
+		<type name="serial"/>
+	</column>
+	<column name="object_id_objects" not-null="true">
+		<type name="integer"/>
+	</column>
+	<column name="access_grant" not-null="true">
+		<type name="smallint"/>
+	</column>
+	<column name="access_deny" not-null="true">
+		<type name="smallint"/>
+	</column>
+	<constraint name="pk_roles_operations" type="pk-constr" table="public.roles_operations">
+		<columns names="role_id_roles,module_id_modules,object_id_objects" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="users_operations">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="720" y="140"/>
+	<column name="users_id_users" not-null="true">
+		<type name="integer"/>
+	</column>
+	<column name="module_id_modules" not-null="true">
+		<type name="integer"/>
+	</column>
+	<column name="objects_id_objects" not-null="true">
+		<type name="integer"/>
+	</column>
+	<column name="access_grant" not-null="true">
+		<type name="smallint"/>
+	</column>
+	<column name="access_deny" not-null="true">
+		<type name="smallint"/>
+	</column>
+	<constraint name="ok_users_operations" type="pk-constr" table="public.users_operations">
+		<columns names="users_id_users,module_id_modules,objects_id_objects" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<constraint name="fk_profiles_roles_profiles" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.profiles" table="public.profiles_roles">
+	<columns names="profile_id_profiles" ref-type="src-columns"/>
+	<columns names="profile_id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_profiles_roles_roles" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.roles" table="public.profiles_roles">
+	<columns names="role_id_roles" ref-type="src-columns"/>
+	<columns names="role_id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_users_roles_users" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.users" table="public.users_roles">
+	<columns names="user_id_users" ref-type="src-columns"/>
+	<columns names="user_id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_users_roles_roles" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.roles" table="public.users_roles">
+	<columns names="role_id_roles" ref-type="src-columns"/>
+	<columns names="role_id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_role_id_roles_roles" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.roles" table="public.roles_roles">
+	<columns names="role_id_roles" ref-type="src-columns"/>
+	<columns names="role_id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_roles_role_id_roles" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.roles" table="public.roles_roles">
+	<columns names="roles_role_id" ref-type="src-columns"/>
+	<columns names="role_id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_users_profiles" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.profiles" table="public.users">
+	<columns names="profile_id_profiles" ref-type="src-columns"/>
+	<columns names="profile_id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_tokes_users" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.users" table="public.tokens">
+	<columns names="user_id_users" ref-type="src-columns"/>
+	<columns names="user_id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_modules_applications" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.applications" table="public.modules">
+	<columns names="app_id_applications" ref-type="src-columns"/>
+	<columns names="app_id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_roles_operations_roles" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.roles" table="public.roles_operations">
+	<columns names="role_id_roles" ref-type="src-columns"/>
+	<columns names="role_id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_roles_operations_modules" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.modules" table="public.roles_operations">
+	<columns names="module_id_modules" ref-type="src-columns"/>
+	<columns names="module_id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_roles_operations_objects" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.objects" table="public.roles_operations">
+	<columns names="object_id_objects" ref-type="src-columns"/>
+	<columns names="object_id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_users_operations_users" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.users" table="public.users_operations">
+	<columns names="users_id_users" ref-type="src-columns"/>
+	<columns names="user_id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_users_operations_modules" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.modules" table="public.users_operations">
+	<columns names="module_id_modules" ref-type="src-columns"/>
+	<columns names="module_id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_users_operations_objects" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.objects" table="public.users_operations">
+	<columns names="objects_id_objects" ref-type="src-columns"/>
+	<columns names="object_id" ref-type="dst-columns"/>
+</constraint>
+
+<relationship name="rel_profiles_roles_profiles" type="relfk"
+	 src-table="public.profiles_roles"
+	 dst-table="public.profiles"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_profiles_roles_roles" type="relfk"
+	 src-table="public.profiles_roles"
+	 dst-table="public.roles"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_users_roles_users" type="relfk"
+	 src-table="public.users_roles"
+	 dst-table="public.users"
+	 src-required="false" dst-required="false">
+	<label ref-type="name-label">
+		<position x="0" y="0"/>
+	</label>
+</relationship>
+
+<relationship name="rel_users_roles_roles" type="relfk"
+	 src-table="public.users_roles"
+	 dst-table="public.roles"
+	 src-required="false" dst-required="false">
+	<label ref-type="src-label">
+		<position x="6.07125" y="5.8"/>
+	</label>
+</relationship>
+
+<relationship name="rel_roles_roles_roles" type="relfk"
+	 src-table="public.roles_roles"
+	 dst-table="public.roles"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_tokens_users" type="relfk"
+	 src-table="public.tokens"
+	 dst-table="public.users"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_modules_applications" type="relfk"
+	 src-table="public.modules"
+	 dst-table="public.applications"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_roles_operations_roles" type="relfk"
+	 src-table="public.roles_operations"
+	 dst-table="public.roles"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_roles_operations_modules" type="relfk"
+	 src-table="public.roles_operations"
+	 dst-table="public.modules"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_roles_operations_objects" type="relfk"
+	 src-table="public.roles_operations"
+	 dst-table="public.objects"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_users_operations_users" type="relfk"
+	 src-table="public.users_operations"
+	 dst-table="public.users"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_users_operations_modules" type="relfk"
+	 src-table="public.users_operations"
+	 dst-table="public.modules"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_users_operations_objects" type="relfk"
+	 src-table="public.users_operations"
+	 dst-table="public.objects"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_users_profiles" type="relfk"
+	 src-table="public.users"
+	 dst-table="public.profiles"
+	 src-required="false" dst-required="false"/>
+
+</dbmodel>

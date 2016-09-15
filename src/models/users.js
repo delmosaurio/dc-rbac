@@ -13,6 +13,8 @@
 // google_id
 // account_image
 // account_google_url
+// created_at
+// updated_at
 export default function(sequelize, DataTypes) {
   return sequelize.define('users', {
     user_id: {
@@ -75,9 +77,19 @@ export default function(sequelize, DataTypes) {
       type: DataTypes.STRING,
       allowNull: true,
     },
+    created_at: {
+      type: DataTypes.DATE,
+      allowNull: false,
+    },
+    updated_at: {
+      type: DataTypes.DATE,
+      allowNull: false,
+    },
   }, {
     tableName: 'users',
-    timestamps: false,
+    timestamps: true,
     freezeTableName: true,
+    createdAt: 'created_at',
+    updatedAt: 'updated_at'
   });
 }
