@@ -1,32 +1,34 @@
 'use strict';
 
-import objects from './objects';
-import profiles from './profiles';
-import profilesRoles from './profiles_roles';
-import roles from './roles';
-import rolesObjects from './roles_objects';
-import rolesRoles from './roles_roles';
-import users from './users';
-import usersObjects from './users_objects';
-import usersRoles from './users_roles';
-import Users from './users';
-import Applications from './applications';
-import Tokens from './tokens';
+import usersPrivileges from  './users_privileges';
+import usersScope from  './users_scope';
+import groups from  './groups';
+import actions from  './actions';
+import groupHasGroups from  './group_has_groups';
+import groupsPrivileges from  './groups_privileges';
+import tokens from  './tokens';
+import apps from  './apps';
+import groupsMemberships from  './groups_memberships';
+import modules from  './modules';
+import groupsScope from  './groups_scope';
+import users from  './users';
+
+
 
 export default class Models {
-
   constructor(sequelize, DataTypes){
-    this.objects = objects(sequelize, DataTypes);
-    this.profiles = profiles(sequelize, DataTypes);
-    this.profilesRoles = profilesRoles(sequelize, DataTypes);
-    this.roles = roles(sequelize, DataTypes);
-    this.rolesObjects = rolesObjects(sequelize, DataTypes);
-    this.rolesRoles = rolesRoles(sequelize, DataTypes);
+    this.usersPrivileges = usersPrivileges(sequelize, DataTypes);
+    this.usersScope = usersScope(sequelize, DataTypes);
+    this.groups = groups(sequelize, DataTypes);
+    this.actions = actions(sequelize, DataTypes);
+    this.groupHasGroups = groupHasGroups(sequelize, DataTypes);
+    this.groupsPrivileges = groupsPrivileges(sequelize, DataTypes);
+    this.tokens = tokens(sequelize, DataTypes);
+    this.apps = apps(sequelize, DataTypes);
+    this.groupsMemberships = groupsMemberships(sequelize, DataTypes);
+    this.modules = modules(sequelize, DataTypes);
+    this.groupsScope = groupsScope(sequelize, DataTypes);
     this.users = users(sequelize, DataTypes);
-    this.usersObjects = usersObjects(sequelize, DataTypes);
-    this.usersRoles = usersRoles(sequelize, DataTypes);
-    this.applications = Applications(sequelize, DataTypes);
-    this.tokens = Tokens(sequelize, DataTypes);
+  
   }
-
 }

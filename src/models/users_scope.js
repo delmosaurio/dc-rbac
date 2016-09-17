@@ -1,9 +1,10 @@
-// users_roles
+// users_scope
 //
 // user_id_users
-// role_id_roles
+// target_table
+// scope_rule
 export default function(sequelize, DataTypes) {
-  return sequelize.define('users_roles', {
+  return sequelize.define('users_scope', {
     user_id_users: {
       type: DataTypes.INTEGER,
       allowNull: false,
@@ -13,16 +14,17 @@ export default function(sequelize, DataTypes) {
         "key": "user_id"
       },
     },
-    role_id_roles: {
-      type: DataTypes.INTEGER,
+    target_table: {
+      type: DataTypes.STRING,
       allowNull: false,
-      references: {
-        "model": "roles",
-        "key": "role_id"
-      },
+      primaryKey: true,
+    },
+    scope_rule: {
+      type: DataTypes.TEXT,
+      allowNull: false,
     },
   }, {
-    tableName: 'users_roles',
+    tableName: 'users_scope',
     timestamps: false,
     freezeTableName: true,
   });

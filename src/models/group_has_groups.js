@@ -1,28 +1,28 @@
-// profiles_roles
+// group_has_groups
 //
-// profile_id_profiles
-// role_id_roles
+// group_id_groups
+// has_group_id
 export default function(sequelize, DataTypes) {
-  return sequelize.define('profiles_roles', {
-    profile_id_profiles: {
+  return sequelize.define('group_has_groups', {
+    group_id_groups: {
       type: DataTypes.INTEGER,
       allowNull: false,
       primaryKey: true,
       references: {
-        "model": "profiles",
-        "key": "profile_id"
+        "model": "groups",
+        "key": "group_id"
       },
     },
-    role_id_roles: {
+    has_group_id: {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
-        "model": "roles",
-        "key": "role_id"
+        "model": "groups",
+        "key": "group_id"
       },
     },
   }, {
-    tableName: 'profiles_roles',
+    tableName: 'group_has_groups',
     timestamps: false,
     freezeTableName: true,
   });

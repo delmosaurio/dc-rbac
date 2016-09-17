@@ -1,21 +1,26 @@
-// applications
+// groups
 //
-// application_id
-// application_name
+// group_id
+// group_name
+// group_description
 export default function(sequelize, DataTypes) {
-  return sequelize.define('applications', {
-    application_id: {
+  return sequelize.define('groups', {
+    group_id: {
       type: DataTypes.BIGINT,
       allowNull: false,
       primaryKey: true,
       autoIncrement: true,
     },
-    application_name: {
+    group_name: {
       type: DataTypes.STRING,
       allowNull: false,
     },
+    group_description: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+    },
   }, {
-    tableName: 'applications',
+    tableName: 'groups',
     timestamps: false,
     freezeTableName: true,
   });
