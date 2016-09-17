@@ -12,7 +12,7 @@
     "lint": "eslint src test",
     "check": "npm run lint -s && dependency-check package.json --entry src",
     "watch": "watch 'npm run build' src test",
-    "test": "mocha test/index.js",
+    "test": "mocha test/index.js  --timeout 10000",
     "prebuild": "npm run check -s && npm run clean -s",
     "build": "babel src -d dist",
     "postbuild": "npm run test -s",
@@ -61,6 +61,7 @@
     "watch": "^0.16.0"
   },
   "dependencies": {
+    "async": "^2.0.1",
     "bcrypt": "^0.8.7",
     "bs58": "^3.0.0",
     "lodash": "^4.15.0",

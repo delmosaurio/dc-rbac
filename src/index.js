@@ -1,8 +1,12 @@
-import Security from './libs/security';
 import Q from 'q';
 import Models from './models/';
 import Sequelize from 'sequelize';
 import moment from 'moment';
+import Security from './libs/security';
+import utils from './libs/utils';
+import path from 'path';
+import setup from './libs/setup.js';
+import factories from './libs/factories';
 
 /**
  * La clase DcRbac encapsula los metodos necesario
@@ -46,89 +50,14 @@ export default class DcRbac {
     });
 
     this.models = new Models(this.sequelize, Sequelize);
-  }
+      var database = db.database;
+      var user = db.user;
+      var pwd = db.pwd;
+      var structure = path.resolve('./model/rbac.sql');
+      var functions = path.resolve('./model/rbac_functions.sql');
+    this.setup = setup({database, user, pwd, structure, functions});
 
-
-  //
-  // PRIVATE
-  // 
-  
-  /**
-   * Mapea propiedades visibles de un usuario.
-   * 
-   * @param  {Object} u Usuario
-   * @return {Object}   Usuario
-   * @private
-   */
-  mapUserPublic(u){
-    delete u.password;
-    delete u.user_salt;
-    u.profile = { profile_id: u.profile_id_profiles };
-    return u;
-  }
-
-  /**
-   * Ejecuta una función de la base de datos.
-   * 
-   * @param  {String} fn       Nombre de la función
-   * @param  {Object}   params Parametros
-   * @promise {Object} Q.promise
-   * @private
-   */
-  executeFn(fn, params){
-    var def = Q.defer();
-
-    var replacements = Object.keys(params).map(p => {
-      return `:${p}`;
-    });
-    var rstr = replacements.join(',');
-
-    this.sequelize
-      .query(`SELECT public.${fn}(${rstr}) as resul`,
-        { 
-          replacements: params,
-          type: this.sequelize.QueryTypes.SELECT
-        }
-      )
-      .then(function(res) {
-        var result = null;
-        if (res.length > 0){
-          result = res[0].result;
-        }
-        def.resolve(result);
-      })
-      .catch(function(err){
-        def.reject(err);
-      });
-
-    return def.promise;
-  }
-
-  /**
-   * Ejecuta una query en forma de select en la base de datos.
-   * 
-   * @param  {String} query Query
-   * @param  {Object} params Parametros
-   * @promise {Object} Q.promise
-   * @private
-   */
-  executeSelect(query, replacements){
-    var def = Q.defer();
-
-    this.sequelize
-      .query(query,
-        { 
-          replacements: replacements,
-          type: this.sequelize.QueryTypes.SELECT
-        }
-      )
-      .then(res => {
-        def.resolve(res);
-      })
-      .catch(function(err){
-        def.reject(err);
-      });
-
-    return def.promise;
+    // registramos las functions
+    factories(this);
   }
 }
