@@ -3,9 +3,10 @@
 import Q from 'q';
 import utils from '../utils';
 export default class Auto_users {
-  constructor(sequelize, models) {
-    this.sequelize = sequelize;
-    this.models = models;
+  constructor(owner) {
+    this.sequelize = owner.sequelize;
+    this.models = owner.models;
+    this.security = owner.security;
   }
   create(obj) {
     return utils.executeModel(this.sequelize, this.models.users, 'create', [obj]);
@@ -15,7 +16,7 @@ export default class Auto_users {
     delete obj.user_id;
     let where = {
       where: {
-        user_id: obj.user_id,
+        user_id: user_id,
       }
     };
     return utils.executeModel(this.sequelize, this.models.users, 'update', [obj, where]);

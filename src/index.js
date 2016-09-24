@@ -8,6 +8,7 @@ import path from 'path';
 import setup from './setup';
 import Apps from './libs/apps';
 import Users from './libs/users';
+import Tokens from './libs/tokens';
 
 /**
  * La clase DcRbac encapsula los metodos necesario
@@ -72,5 +73,12 @@ export default class DcRbac {
       this._users = new Users(this);
     }
     return this._users;
+  }
+
+  get tokens() {
+    if (!this._tokens){
+      this._tokens = new Tokens(this);
+    }
+    return this._tokens;
   }
 }

@@ -3,9 +3,10 @@
 import Q from 'q';
 import utils from '../utils';
 export default class Auto_apps {
-  constructor(sequelize, models) {
-    this.sequelize = sequelize;
-    this.models = models;
+  constructor(owner) {
+    this.sequelize = owner.sequelize;
+    this.models = owner.models;
+    this.security = owner.security;
   }
   create(obj) {
     return utils.executeModel(this.sequelize, this.models.apps, 'create', [obj]);
@@ -15,7 +16,7 @@ export default class Auto_apps {
     delete obj.app;
     let where = {
       where: {
-        app: obj.app,
+        app: app,
       }
     };
     return utils.executeModel(this.sequelize, this.models.apps, 'update', [obj, where]);

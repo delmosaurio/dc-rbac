@@ -51,7 +51,7 @@ function build(err){
 
   var templateIndex = ejs.compile(fs.readFileSync('./modeler/index.ejs.js', 'utf-8'), {});
 
-  var includes = ['apps', 'users', 'modules'];
+  var includes = ['apps', 'users', 'tokens'];
 
   async
     .eachSeries(

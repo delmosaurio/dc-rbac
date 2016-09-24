@@ -10,10 +10,7 @@ import Auto_users from './users.auto.js';
  */
 export default class Users extends Auto_users{
   constructor(owner){
-    super(owner.sequelize, owner.models);
-    this.sequelize = owner.sequelize;
-    this.models = owner.models;
-    this.security = owner.security;
+    super(owner);
   }
 
   register(user){
@@ -68,5 +65,40 @@ export default class Users extends Auto_users{
     };
 
     return this.update(user);
+  }
+
+  authenticate(username, pwd){
+    var def = Q.defer();
+
+    this
+      .getByUsernameOrEmail(username)
+      .then(user => {
+        if (!user){
+          return def.reject(new Error('Unknown user'));
+        }
+
+        if (user.user_state !== 'enabled'){
+          return def.reject(new Error('The user is not enabled'));
+        }
+
+        var savedpwd = user.password;
+        var salt = user.user_salt;
+
+        try{
+          var cp = this.security.comparePassword(pwd, savedpwd);
+
+          if (cp){
+            return def.resolve(user);
+          }
+          return def.reject(new Error('Wrong password'));
+        } catch(err){
+          return def.reject(err);
+        }
+      })
+      .catch(err => {
+        def.reject(err);
+      });
+
+    return def.promise;
   }
 }

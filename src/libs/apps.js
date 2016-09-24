@@ -10,8 +10,6 @@ import Auto_apps from './apps.auto.js';
  */
 export default class Apps extends Auto_apps{
   constructor(owner){
-    super(owner.sequelize, owner.models);
-    this.sequelize = sequelize;
-    this.models = models;
+    super(owner);
   }
 }

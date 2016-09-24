@@ -6,9 +6,10 @@ import Q from 'q';
 import utils from '../utils';
 
 export default class Auto_<%= _.camelCase(name) %> {
-  constructor(sequelize, models){
-    this.sequelize = sequelize;
-    this.models = models;
+  constructor(owner){
+    this.sequelize = owner.sequelize;
+    this.models = owner.models;
+    this.security = owner.security;
   }
 
   create(obj) {
@@ -29,7 +30,7 @@ export default class Auto_<%= _.camelCase(name) %> {
     let where = { 
       where : {
         <% pkeys.forEach(function(pk){ -%>
-        <%= pk %>: obj.<%= pk %>,
+        <%= pk %>: <%= pk %>,
         <% }); %>
       }
     };
