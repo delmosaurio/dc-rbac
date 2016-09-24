@@ -2,7 +2,8 @@
 //
 // user_id_users
 // target_table
-// scope_rule
+// scope_rule_grant
+// scope_rule_deny
 export default function(sequelize, DataTypes) {
   return sequelize.define('users_scope', {
     user_id_users: {
@@ -19,7 +20,11 @@ export default function(sequelize, DataTypes) {
       allowNull: false,
       primaryKey: true,
     },
-    scope_rule: {
+    scope_rule_grant: {
+      type: DataTypes.TEXT,
+      allowNull: false,
+    },
+    scope_rule_deny: {
       type: DataTypes.TEXT,
       allowNull: false,
     },

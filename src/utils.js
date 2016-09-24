@@ -1,6 +1,7 @@
 'use strict';
 
 import Q from 'q';
+import _ from 'lodash';
 
 var utils = {};
 
@@ -30,6 +31,21 @@ utils.executeModel = (sequelize, owner, fn, params) => {
     return owner[fn]
       .apply(owner, params)
       .then(o => {
+        if (!o){
+          return def.resolve(null);
+        }
+
+        if (o.dataValues){
+          return def.resolve(o.dataValues, o);
+        }
+
+        if (o instanceof Array){
+          var mapped = _.map(o, i => {
+            return i.dataValues;
+          });
+          return def.resolve(mapped);
+        }
+
         def.resolve(o);
       })
       .catch(err => {

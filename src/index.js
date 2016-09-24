@@ -2,11 +2,12 @@ import Q from 'q';
 import Models from './models/';
 import Sequelize from 'sequelize';
 import moment from 'moment';
-import Security from './libs/security';
-import utils from './libs/utils';
+import Security from './security';
+import utils from './utils';
 import path from 'path';
-import setup from './libs/setup.js';
-import factorize from './libs/factorize';
+import setup from './setup';
+import Apps from './libs/apps';
+import Users from './libs/users';
 
 /**
  * La clase DcRbac encapsula los metodos necesario
@@ -50,14 +51,26 @@ export default class DcRbac {
     });
 
     this.models = new Models(this.sequelize, Sequelize);
-      var database = db.database;
-      var user = db.user;
-      var pwd = db.pwd;
-      var structure = path.resolve('./model/rbac.sql');
-      var functions = path.resolve('./model/rbac_functions.sql');
+    
+    let database = db.database;
+    let user = db.user;
+    let pwd = db.pwd;
+    let structure = path.resolve('./model/rbac.sql');
+    let functions = path.resolve('./model/rbac_functions.sql');
     this.setup = setup({database, user, pwd, structure, functions});
+  }
 
-    // registramos las functions
-    factorize(this);
+  get apps() {
+    if (!this._apps){
+      this._apps = new Apps(this);
+    }
+    return this._apps;
+  }
+
+  get users() {
+    if (!this._users){
+      this._users = new Users(this);
+    }
+    return this._users;
   }
 }

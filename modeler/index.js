@@ -43,24 +43,56 @@ function build(err){
     throw err;
   }
 
-  var templ = fs.readFileSync('./modeler/model.ejs.js', 'utf-8');
-  var template = ejs.compile(templ, {});
+  var modelTempl = fs.readFileSync('./modeler/model.ejs.js', 'utf-8');
+  var modelTemplate = ejs.compile(modelTempl, {});
+
+  var entityTempl = fs.readFileSync('./modeler/entity.ejs.js', 'utf-8');
+  var entityTemplate = ejs.compile(entityTempl, {});
 
   var templateIndex = ejs.compile(fs.readFileSync('./modeler/index.ejs.js', 'utf-8'), {});
+
+  var includes = ['apps', 'users', 'modules'];
 
   async
     .eachSeries(
       _.keys(auto.tables),
       function(tname, cb){
-        var rname = path.resolve(path.join('./.tmp/models/', tname+'.js'));
 
-        var params = generator.buildParams(auto, tname);
+        async.parallel([
+          function(icb){
+            var params = generator.buildParams(auto, tname);
+            var out = modelTemplate({name: tname, fields: auto.tables[tname], params: params });
 
-        var out = template({name: tname, fields: auto.tables[tname], params: params });
-        
-        var fname = path.join(process.cwd(), '/src/models/', tname+'.js');
-        fname = path.resolve(fname);
-        fs.writeFile(fname, beautify(out, { indent_size: 2, preserve_newlines: false }), cb);
+            var fname = path.join(process.cwd(), '/src/models/', tname+'.js');
+            fname = path.resolve(fname);
+            fs.writeFile(fname, beautify(out, { indent_size: 2, preserve_newlines: false }), icb);
+          },
+          function(icb){
+            if (includes.indexOf(tname) === -1){
+              return icb(null);
+            }
+            var params = generator.buildParams(auto, tname);
+            if (tname === 'actions'){
+              console.log(auto.tables[tname]);
+            }
+            var pkeys = _.filter(_.keys(auto.tables[tname]), function(pk){
+              var thing = auto.tables[tname][pk];
+              var fk = true;
+              if (thing.foreignKey){
+                fk = thing.foreignKey.contype !== 'u';
+              }
+              return thing.primaryKey && fk;
+            });
+            pkeys = _.sortBy(pkeys);
+            var out = entityTemplate({name: tname, fields: auto.tables[tname], pkeys: pkeys, params: params, _: _ });
+
+            var fname = path.join(process.cwd(), '/src/libs/', _.camelCase(tname)+'.auto.js');
+            fname = path.resolve(fname);
+            fs.writeFile(fname, beautify(out, { indent_size: 2, preserve_newlines: false }), icb);
+          }
+        ], function(err){
+          cb(err);
+        });
 
       }, function(err){
         if (err){
