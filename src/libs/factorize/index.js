@@ -1,8 +1,8 @@
 'use strict';
 
-import app from './app';
+import apps from './apps';
 
 export default (owner) => {
   // create application methods
-  app(owner);
+  apps(owner);
 }

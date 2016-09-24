@@ -136,7 +136,7 @@ CREATE TABLE public.modules(
 	module varchar(20) NOT NULL,
 	app_apps varchar(10) NOT NULL,
 	module_description text,
-	CONSTRAINT pk_modules PRIMARY KEY (module)
+	CONSTRAINT pk_modules PRIMARY KEY (module,app_apps)
 
 );
 -- ddl-end --
@@ -146,11 +146,12 @@ ALTER TABLE public.modules OWNER TO postgres;
 -- object: public.actions | type: TABLE --
 -- DROP TABLE IF EXISTS public.actions CASCADE;
 CREATE TABLE public.actions(
+	app_apps varchar(20) NOT NULL,
 	module_modules varchar(20) NOT NULL,
 	action varchar(30) NOT NULL,
 	bit_value smallint NOT NULL,
 	action_description text,
-	CONSTRAINT pk_actions PRIMARY KEY (module_modules,action)
+	CONSTRAINT pk_actions PRIMARY KEY (app_apps,module_modules,action)
 
 );
 -- ddl-end --
@@ -196,7 +197,8 @@ ALTER TABLE public.groups_privileges OWNER TO postgres;
 CREATE TABLE public.users_scope(
 	user_id_users smallint NOT NULL,
 	target_table varchar(100) NOT NULL,
-	scope_rule text NOT NULL,
+	scope_rule_grant text NOT NULL,
+	scope_rule_deny text NOT NULL,
 	CONSTRAINT pk_users_scope PRIMARY KEY (user_id_users,target_table)
 
 );
@@ -209,7 +211,8 @@ ALTER TABLE public.users_scope OWNER TO postgres;
 CREATE TABLE public.groups_scope(
 	group_id_groups integer NOT NULL,
 	target_table varchar(100) NOT NULL,
-	scope_rule text NOT NULL,
+	scope_rule_grant text NOT NULL,
+	scope_rule_deny smallint NOT NULL,
 	CONSTRAINT pk_groups_scope PRIMARY KEY (group_id_groups,target_table)
 
 );
@@ -259,10 +262,17 @@ REFERENCES public.apps (app) MATCH FULL
 ON DELETE NO ACTION ON UPDATE NO ACTION;
 -- ddl-end --
 
--- object: fk_module_modules_modules | type: CONSTRAINT --
--- ALTER TABLE public.actions DROP CONSTRAINT IF EXISTS fk_module_modules_modules CASCADE;
-ALTER TABLE public.actions ADD CONSTRAINT fk_module_modules_modules FOREIGN KEY (module_modules)
-REFERENCES public.modules (module) MATCH FULL
+-- object: fk_action_module_modules_modules | type: CONSTRAINT --
+-- ALTER TABLE public.actions DROP CONSTRAINT IF EXISTS fk_action_module_modules_modules CASCADE;
+ALTER TABLE public.actions ADD CONSTRAINT fk_action_module_modules_modules FOREIGN KEY (app_apps,module_modules)
+REFERENCES public.modules (app_apps,module) MATCH FULL
+ON DELETE NO ACTION ON UPDATE NO ACTION;
+-- ddl-end --
+
+-- object: fk_action_module_app_apps | type: CONSTRAINT --
+-- ALTER TABLE public.actions DROP CONSTRAINT IF EXISTS fk_action_module_app_apps CASCADE;
+ALTER TABLE public.actions ADD CONSTRAINT fk_action_module_app_apps FOREIGN KEY (app_apps)
+REFERENCES public.apps (app) MATCH FULL
 ON DELETE NO ACTION ON UPDATE NO ACTION;
 -- ddl-end --
 

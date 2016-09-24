@@ -4,7 +4,7 @@ import Q from 'q';
 import utils from '../utils';
 
 export default (owner) => {
-    /**
+  /**
    * Registra una nueva aplicación.
    *
    * Veasé Modelo RBAC applications

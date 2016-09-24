@@ -3,7 +3,7 @@
 CAUTION: Do not modify this file unless you know what you are doing.
          Unexpected results may occur if the code is changed deliberately.
 -->
-<dbmodel pgmodeler-ver="0.8.2" last-position="0,0" last-zoom="1"
+<dbmodel pgmodeler-ver="0.8.2" last-position="0,1" last-zoom="1"
 	 default-schema="public" default-owner="postgres">
 <database name="rbac">
 </database>
@@ -193,7 +193,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 		<type name="text"/>
 	</column>
 	<constraint name="pk_modules" type="pk-constr" table="public.modules">
-		<columns names="module" ref-type="src-columns"/>
+		<columns names="module,app_apps" ref-type="src-columns"/>
 	</constraint>
 </table>
 
@@ -201,6 +201,9 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<schema name="public"/>
 	<role name="postgres"/>
 	<position x="920" y="320"/>
+	<column name="app_apps" not-null="true">
+		<type name="varchar" length="20"/>
+	</column>
 	<column name="module_modules" not-null="true">
 		<type name="varchar" length="20"/>
 	</column>
@@ -214,7 +217,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 		<type name="text"/>
 	</column>
 	<constraint name="pk_actions" type="pk-constr" table="public.actions">
-		<columns names="module_modules,action" ref-type="src-columns"/>
+		<columns names="app_apps,module_modules,action" ref-type="src-columns"/>
 	</constraint>
 </table>
 
@@ -270,7 +273,10 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<column name="target_table" not-null="true">
 		<type name="varchar" length="100"/>
 	</column>
-	<column name="scope_rule" not-null="true">
+	<column name="scope_rule_grant" not-null="true">
+		<type name="text"/>
+	</column>
+	<column name="scope_rule_deny" not-null="true">
 		<type name="text"/>
 	</column>
 	<constraint name="pk_users_scope" type="pk-constr" table="public.users_scope">
@@ -288,8 +294,11 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<column name="target_table" not-null="true">
 		<type name="varchar" length="100"/>
 	</column>
-	<column name="scope_rule" not-null="true">
+	<column name="scope_rule_grant" not-null="true">
 		<type name="text"/>
+	</column>
+	<column name="scope_rule_deny" not-null="true">
+		<type name="smallint"/>
 	</column>
 	<constraint name="pk_groups_scope" type="pk-constr" table="public.groups_scope">
 		<columns names="group_id_groups,target_table" ref-type="src-columns"/>
@@ -332,10 +341,16 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<columns names="app" ref-type="dst-columns"/>
 </constraint>
 
-<constraint name="fk_module_modules_modules" type="fk-constr" comparison-type="MATCH FULL"
+<constraint name="fk_action_module_modules_modules" type="fk-constr" comparison-type="MATCH FULL"
 	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.modules" table="public.actions">
-	<columns names="module_modules" ref-type="src-columns"/>
-	<columns names="module" ref-type="dst-columns"/>
+	<columns names="app_apps,module_modules" ref-type="src-columns"/>
+	<columns names="app_apps,module" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_action_module_app_apps" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.apps" table="public.actions">
+	<columns names="app_apps" ref-type="src-columns"/>
+	<columns names="app" ref-type="dst-columns"/>
 </constraint>
 
 <constraint name="fk_users_privileges_users" type="fk-constr" comparison-type="MATCH FULL"
@@ -410,6 +425,11 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <relationship name="rel_users_scope_cp_groups" type="relfk"
 	 src-table="public.groups_scope"
 	 dst-table="public.groups"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_actions_apps" type="relfk"
+	 src-table="public.actions"
+	 dst-table="public.apps"
 	 src-required="false" dst-required="false"/>
 
 </dbmodel>

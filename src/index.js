@@ -6,7 +6,7 @@ import Security from './libs/security';
 import utils from './libs/utils';
 import path from 'path';
 import setup from './libs/setup.js';
-import factories from './libs/factories';
+import factorize from './libs/factorize';
 
 /**
  * La clase DcRbac encapsula los metodos necesario
@@ -58,6 +58,6 @@ export default class DcRbac {
     this.setup = setup({database, user, pwd, structure, functions});
 
     // registramos las functions
-    factories(this);
+    factorize(this);
   }
 }
