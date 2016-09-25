@@ -4,6 +4,20 @@ import Q from 'q';
 import utils from '../utils';
 import Auto_users from './users.auto.js';
 
+function _map(item){
+  if (item instanceof Array){
+    return item.map( i => {
+      delete i.password;
+      delete i.user_salt;
+      return i;
+    });
+  }
+
+  delete item.password;
+  delete item.user_salt;
+  return item;
+}
+
 /**
  * Contiene los metodos necesarios para trabajar
  * con la tabla users.
@@ -11,6 +25,46 @@ import Auto_users from './users.auto.js';
 export default class Users extends Auto_users{
   constructor(owner){
     super(owner);
+  }
+
+  // Override methods
+  create(obj) {
+    var def = Q.defer();
+    super
+      .create(obj)
+      .then(res => {
+        def.resolve(_map(res));
+      })
+      .catch( err => {
+        def.reject(err);
+      });
+    return def.promise;
+  }
+
+  findAll(filters) {
+    var def = Q.defer();
+    super
+      .findAll(filters)
+      .then(res => {
+        def.resolve(_map(res));
+      })
+      .catch( err => {
+        def.reject(err);
+      });
+    return def.promise;
+  }
+
+  findOne(params) {
+    var def = Q.defer();
+    super
+      .findOne(params)
+      .then(res => {
+        def.resolve(_map(res));
+      })
+      .catch( err => {
+        def.reject(err);
+      });
+    return def.promise;
   }
 
   register(user){
@@ -70,8 +124,10 @@ export default class Users extends Auto_users{
   authenticate(username, pwd){
     var def = Q.defer();
 
-    this
-      .getByUsernameOrEmail(username)
+    var params = { $or:  [{username: username}, {email: username}] };
+
+    super
+      .findOne(params)
       .then(user => {
         if (!user){
           return def.reject(new Error('Unknown user'));
@@ -88,7 +144,7 @@ export default class Users extends Auto_users{
           var cp = this.security.comparePassword(pwd, savedpwd);
 
           if (cp){
-            return def.resolve(user);
+            return def.resolve(_map(user));
           }
           return def.reject(new Error('Wrong password'));
         } catch(err){
