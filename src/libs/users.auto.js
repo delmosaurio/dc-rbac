@@ -22,7 +22,13 @@ export default class Auto_users {
     return utils.executeModel(this.sequelize, this.models.users, 'update', [obj, where]);
   }
   delete(obj) {
-    throw new Error('Not implemented');
+    let params = {
+      user_id: obj.user_id,
+    };
+    let where = {
+      where: params
+    };
+    return utils.executeModel(this.sequelize, this.models.users, 'destroy', [where]);
   }
   findAll(filters) {
     filters = filters || {};

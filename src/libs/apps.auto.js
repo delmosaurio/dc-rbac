@@ -22,7 +22,13 @@ export default class Auto_apps {
     return utils.executeModel(this.sequelize, this.models.apps, 'update', [obj, where]);
   }
   delete(obj) {
-    throw new Error('Not implemented');
+    let params = {
+      app: obj.app,
+    };
+    let where = {
+      where: params
+    };
+    return utils.executeModel(this.sequelize, this.models.apps, 'destroy', [where]);
   }
   findAll(filters) {
     filters = filters || {};

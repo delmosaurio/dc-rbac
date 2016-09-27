@@ -9,6 +9,7 @@ import setup from './setup';
 import Apps from './libs/apps';
 import Users from './libs/users';
 import Tokens from './libs/tokens';
+import Groups from './libs/groups';
 
 /**
  * La clase DcRbac encapsula los metodos necesario
@@ -81,4 +82,12 @@ export default class DcRbac {
     }
     return this._tokens;
   }
+
+  get groups() {
+    if (!this._groups){
+      this._groups = new Groups(this);
+    }
+    return this._groups;
+  }
+  
 }

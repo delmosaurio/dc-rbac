@@ -15,7 +15,7 @@ export default class Auto_<%= _.camelCase(name) %> {
   create(obj) {
     return utils.executeModel(
       this.sequelize,
-      this.models.<%=name %>,
+      this.models.<%=_.camelCase(name) %>,
       'create',
       [obj]
     );
@@ -37,14 +37,29 @@ export default class Auto_<%= _.camelCase(name) %> {
 
     return utils.executeModel(
       this.sequelize,
-      this.models.<%=name %>,
+      this.models.<%=_.camelCase(name) %>,
       'update',
       [obj, where]
     );
   }
 
   delete(obj) {
-    throw new Error('Not implemented'); 
+    let params = {
+      <% pkeys.forEach(function(pk){ -%>
+      <%= pk %>: obj.<%= pk %>,
+      <% }); %>
+    };
+
+    let where = { 
+      where : params
+    };
+
+    return utils.executeModel(
+      this.sequelize,
+      this.models.<%=_.camelCase(name) %>,
+      'destroy',
+      [where]
+    );
   }
 
   findAll(filters){
@@ -52,7 +67,7 @@ export default class Auto_<%= _.camelCase(name) %> {
     let where = { where : filters };
     return utils.executeModel(
       this.sequelize,
-      this.models.<%=name %>,
+      this.models.<%=_.camelCase(name) %>,
       'findAll',
       [where]
     );
@@ -64,7 +79,7 @@ export default class Auto_<%= _.camelCase(name) %> {
     };
     return utils.executeModel(
       this.sequelize,
-      this.models.<%=name %>,
+      this.models.<%=_.camelCase(name) %>,
       'findOne',
       [where]
     );

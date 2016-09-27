@@ -4,6 +4,7 @@ logs
 node_modules
 dist
 tmp
+tmp.js
 coverage
 npm-debug.log
 temp.txt

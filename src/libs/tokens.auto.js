@@ -25,7 +25,14 @@ export default class Auto_tokens {
     return utils.executeModel(this.sequelize, this.models.tokens, 'update', [obj, where]);
   }
   delete(obj) {
-    throw new Error('Not implemented');
+    let params = {
+      token: obj.token,
+      user_id_users: obj.user_id_users,
+    };
+    let where = {
+      where: params
+    };
+    return utils.executeModel(this.sequelize, this.models.tokens, 'destroy', [where]);
   }
   findAll(filters) {
     filters = filters || {};
