@@ -9,6 +9,9 @@ import Auto_users from './users.auto.js';
 import Groups from './groups.js';
 
 function _map(item){
+  if (!item){
+    return null;
+  }
   if (item instanceof Array){
     return item.map( i => {
       delete i.password;
@@ -46,6 +49,12 @@ export default class Users extends Auto_users{
         def.reject(err);
       });
     return def.promise;
+  }
+  
+  update(obj) {
+    delete obj.password;
+    return super
+            .update(obj);
   }
 
   findAll(filters) {

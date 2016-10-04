@@ -45,8 +45,8 @@ CREATE TABLE public.users(
 	google_id varchar(100),
 	account_image varchar(200),
 	account_google_url varchar(200),
-	created_at date NOT NULL,
-	updated_at date NOT NULL,
+	created_at timestamp NOT NULL,
+	updated_at timestamp NOT NULL,
 	CONSTRAINT pk_users PRIMARY KEY (user_id),
 	CONSTRAINT uq_users_username UNIQUE (username),
 	CONSTRAINT uq_users_email UNIQUE (email)
