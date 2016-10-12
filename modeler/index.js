@@ -68,13 +68,13 @@ function build(err){
             fs.writeFile(fname, beautify(out, { indent_size: 2, preserve_newlines: false }), icb);
           },
           function(icb){
-            if (includes.indexOf(tname) === -1){
-              return icb(null);
-            }
+            //if (includes.indexOf(tname) === -1){
+            //  return icb(null);
+            //}
             var params = generator.buildParams(auto, tname);
-            if (tname === 'actions'){
-              console.log(auto.tables[tname]);
-            }
+            //if (tname === 'actions'){
+            //  //console.log(auto.tables[tname]);
+            //}
             var pkeys = _.filter(_.keys(auto.tables[tname]), function(pk){
               var thing = auto.tables[tname][pk];
               var fk = true;

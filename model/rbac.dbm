@@ -3,7 +3,7 @@
 CAUTION: Do not modify this file unless you know what you are doing.
          Unexpected results may occur if the code is changed deliberately.
 -->
-<dbmodel pgmodeler-ver="0.8.2" last-position="0,0" last-zoom="1"
+<dbmodel pgmodeler-ver="0.8.2" last-position="3,0" last-zoom="1"
 	 default-schema="public" default-owner="postgres">
 <database name="rbac">
 </database>
@@ -113,8 +113,11 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="apps">
 	<schema name="public"/>
 	<role name="postgres"/>
-	<position x="920" y="120"/>
-	<column name="app" not-null="true">
+	<position x="840" y="120"/>
+	<column name="app_id" not-null="true">
+		<type name="serial"/>
+	</column>
+	<column name="app">
 		<type name="varchar" length="10"/>
 	</column>
 	<column name="app_caption" not-null="true">
@@ -124,6 +127,9 @@ CAUTION: Do not modify this file unless you know what you are doing.
 		<type name="text"/>
 	</column>
 	<constraint name="pk_app" type="pk-constr" table="public.apps">
+		<columns names="app_id" ref-type="src-columns"/>
+	</constraint>
+	<constraint name="uq_apps" type="uq-constr" table="public.apps">
 		<columns names="app" ref-type="src-columns"/>
 	</constraint>
 </table>
@@ -131,7 +137,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="groups">
 	<schema name="public"/>
 	<role name="postgres"/>
-	<position x="460" y="320"/>
+	<position x="460" y="280"/>
 	<column name="group_id" not-null="true">
 		<type name="bigserial"/>
 	</column>
@@ -152,7 +158,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="groups_memberships">
 	<schema name="public"/>
 	<role name="postgres"/>
-	<position x="480" y="140"/>
+	<position x="480" y="120"/>
 	<column name="group_id_groups" not-null="true">
 		<type name="integer"/>
 	</column>
@@ -167,7 +173,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="group_has_groups">
 	<schema name="public"/>
 	<role name="postgres"/>
-	<position x="480" y="240"/>
+	<position x="480" y="200"/>
 	<column name="group_id_groups" not-null="true">
 		<type name="integer"/>
 	</column>
@@ -182,42 +188,57 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="modules">
 	<schema name="public"/>
 	<role name="postgres"/>
-	<position x="920" y="220"/>
+	<position x="840" y="240"/>
+	<column name="module_id" not-null="true">
+		<type name="serial"/>
+	</column>
 	<column name="module" not-null="true">
 		<type name="varchar" length="20"/>
 	</column>
-	<column name="app_apps" not-null="true">
-		<type name="varchar" length="10"/>
+	<column name="module_caption">
+		<type name="varchar" length="20"/>
+	</column>
+	<column name="app_id_apps" not-null="true">
+		<type name="integer" length="10"/>
 	</column>
 	<column name="module_description">
 		<type name="text"/>
 	</column>
 	<constraint name="pk_modules" type="pk-constr" table="public.modules">
-		<columns names="module,app_apps" ref-type="src-columns"/>
+		<columns names="module_id" ref-type="src-columns"/>
+	</constraint>
+	<constraint name="uq_module" type="uq-constr" table="public.modules">
+		<columns names="module" ref-type="src-columns"/>
 	</constraint>
 </table>
 
 <table name="actions">
 	<schema name="public"/>
 	<role name="postgres"/>
-	<position x="920" y="320"/>
-	<column name="app_apps" not-null="true">
-		<type name="varchar" length="20"/>
+	<position x="840" y="380"/>
+	<column name="action_id" not-null="true">
+		<type name="serial"/>
 	</column>
-	<column name="module_modules" not-null="true">
-		<type name="varchar" length="20"/>
-	</column>
-	<column name="action" not-null="true">
+	<column name="action">
 		<type name="varchar" length="30"/>
+	</column>
+	<column name="module_id_modules" not-null="true">
+		<type name="integer"/>
 	</column>
 	<column name="bit_value" not-null="true">
 		<type name="smallint"/>
+	</column>
+	<column name="action_caption">
+		<type name="varchar" length="30"/>
 	</column>
 	<column name="action_description">
 		<type name="text"/>
 	</column>
 	<constraint name="pk_actions" type="pk-constr" table="public.actions">
-		<columns names="app_apps,module_modules,action" ref-type="src-columns"/>
+		<columns names="action_id" ref-type="src-columns"/>
+	</constraint>
+	<constraint name="uq_action" type="uq-constr" table="public.actions">
+		<columns names="action" ref-type="src-columns"/>
 	</constraint>
 </table>
 
@@ -230,8 +251,11 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="users_privileges">
 	<schema name="public"/>
 	<role name="postgres"/>
-	<position x="460" y="520"/>
+	<position x="480" y="480"/>
 	<column name="user_id_users" not-null="true">
+		<type name="integer"/>
+	</column>
+	<column name="module_id_modules" not-null="true">
 		<type name="integer"/>
 	</column>
 	<column name="actions_access_grant" not-null="true">
@@ -241,15 +265,18 @@ CAUTION: Do not modify this file unless you know what you are doing.
 		<type name="integer"/>
 	</column>
 	<constraint name="pk_users_privileges" type="pk-constr" table="public.users_privileges">
-		<columns names="user_id_users" ref-type="src-columns"/>
+		<columns names="user_id_users,module_id_modules" ref-type="src-columns"/>
 	</constraint>
 </table>
 
 <table name="groups_privileges">
 	<schema name="public"/>
 	<role name="postgres"/>
-	<position x="480" y="420"/>
+	<position x="480" y="380"/>
 	<column name="group_id_groups" not-null="true">
+		<type name="integer"/>
+	</column>
+	<column name="module_id_modules" not-null="true">
 		<type name="integer"/>
 	</column>
 	<column name="actions_access_grant" not-null="true">
@@ -259,49 +286,31 @@ CAUTION: Do not modify this file unless you know what you are doing.
 		<type name="integer"/>
 	</column>
 	<constraint name="pk_groups_privileges" type="pk-constr" table="public.groups_privileges">
-		<columns names="group_id_groups" ref-type="src-columns"/>
+		<columns names="group_id_groups,module_id_modules" ref-type="src-columns"/>
 	</constraint>
 </table>
 
-<table name="users_scope">
+<table name="scopes">
 	<schema name="public"/>
 	<role name="postgres"/>
-	<position x="40" y="400"/>
+	<position x="100" y="380"/>
 	<column name="user_id_users" not-null="true">
-		<type name="smallint"/>
+		<type name="integer"/>
 	</column>
-	<column name="target_table" not-null="true">
-		<type name="varchar" length="100"/>
-	</column>
-	<column name="scope_rule_grant" not-null="true">
-		<type name="text"/>
-	</column>
-	<column name="scope_rule_deny" not-null="true">
-		<type name="text"/>
-	</column>
-	<constraint name="pk_users_scope" type="pk-constr" table="public.users_scope">
-		<columns names="user_id_users,target_table" ref-type="src-columns"/>
-	</constraint>
-</table>
-
-<table name="groups_scope">
-	<schema name="public"/>
-	<role name="postgres"/>
-	<position x="820" y="520"/>
 	<column name="group_id_groups" not-null="true">
 		<type name="integer"/>
 	</column>
-	<column name="target_table" not-null="true">
-		<type name="varchar" length="100"/>
+	<column name="target" not-null="true">
+		<type name="varchar" length="20"/>
 	</column>
-	<column name="scope_rule_grant" not-null="true">
-		<type name="text"/>
+	<column name="rule_access">
+		<type name="json"/>
 	</column>
-	<column name="scope_rule_deny" not-null="true">
-		<type name="smallint"/>
+	<column name="rule_deny">
+		<type name="json"/>
 	</column>
-	<constraint name="pk_groups_scope" type="pk-constr" table="public.groups_scope">
-		<columns names="group_id_groups,target_table" ref-type="src-columns"/>
+	<constraint name="pk_scopes" type="pk-constr" table="public.scopes">
+		<columns names="user_id_users,group_id_groups" ref-type="src-columns"/>
 	</constraint>
 </table>
 
@@ -335,22 +344,16 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<columns names="group_id" ref-type="dst-columns"/>
 </constraint>
 
-<constraint name="fk_app_name_apps" type="fk-constr" comparison-type="MATCH FULL"
+<constraint name="fk_modules_apps" type="fk-constr" comparison-type="MATCH FULL"
 	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.apps" table="public.modules">
-	<columns names="app_apps" ref-type="src-columns"/>
-	<columns names="app" ref-type="dst-columns"/>
+	<columns names="app_id_apps" ref-type="src-columns"/>
+	<columns names="app_id" ref-type="dst-columns"/>
 </constraint>
 
-<constraint name="fk_action_module_modules_modules" type="fk-constr" comparison-type="MATCH FULL"
+<constraint name="fk_actions_modules" type="fk-constr" comparison-type="MATCH FULL"
 	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.modules" table="public.actions">
-	<columns names="app_apps,module_modules" ref-type="src-columns"/>
-	<columns names="app_apps,module" ref-type="dst-columns"/>
-</constraint>
-
-<constraint name="fk_action_module_app_apps" type="fk-constr" comparison-type="MATCH FULL"
-	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.apps" table="public.actions">
-	<columns names="app_apps" ref-type="src-columns"/>
-	<columns names="app" ref-type="dst-columns"/>
+	<columns names="module_id_modules" ref-type="src-columns"/>
+	<columns names="module_id" ref-type="dst-columns"/>
 </constraint>
 
 <constraint name="fk_users_privileges_users" type="fk-constr" comparison-type="MATCH FULL"
@@ -359,20 +362,32 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<columns names="user_id" ref-type="dst-columns"/>
 </constraint>
 
+<constraint name="fk_users_privileges_modules" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.modules" table="public.users_privileges">
+	<columns names="module_id_modules" ref-type="src-columns"/>
+	<columns names="module_id" ref-type="dst-columns"/>
+</constraint>
+
 <constraint name="fk_groups_privileges_groups" type="fk-constr" comparison-type="MATCH FULL"
 	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.groups" table="public.groups_privileges">
 	<columns names="group_id_groups" ref-type="src-columns"/>
 	<columns names="group_id" ref-type="dst-columns"/>
 </constraint>
 
-<constraint name="fk_users_scope_users" type="fk-constr" comparison-type="MATCH FULL"
-	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.users" table="public.users_scope">
+<constraint name="fk_groups_privileges_modules" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.modules" table="public.groups_privileges">
+	<columns names="module_id_modules" ref-type="src-columns"/>
+	<columns names="module_id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_scopes_users" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.users" table="public.scopes">
 	<columns names="user_id_users" ref-type="src-columns"/>
 	<columns names="user_id" ref-type="dst-columns"/>
 </constraint>
 
-<constraint name="fk_groups_scope_groups" type="fk-constr" comparison-type="MATCH FULL"
-	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.groups" table="public.groups_scope">
+<constraint name="fk_scopes_groups" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.groups" table="public.scopes">
 	<columns names="group_id_groups" ref-type="src-columns"/>
 	<columns names="group_id" ref-type="dst-columns"/>
 </constraint>
@@ -397,16 +412,6 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	 dst-table="public.groups"
 	 src-required="false" dst-required="false"/>
 
-<relationship name="rel_modules_applications" type="relfk"
-	 src-table="public.modules"
-	 dst-table="public.apps"
-	 src-required="false" dst-required="false"/>
-
-<relationship name="rel_actions_modules" type="relfk"
-	 src-table="public.actions"
-	 dst-table="public.modules"
-	 src-required="false" dst-required="false"/>
-
 <relationship name="rel_users_privileges_users" type="relfk"
 	 src-table="public.users_privileges"
 	 dst-table="public.users"
@@ -417,19 +422,34 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	 dst-table="public.groups"
 	 src-required="false" dst-required="false"/>
 
-<relationship name="rel_users_scope_users" type="relfk"
-	 src-table="public.users_scope"
+<relationship name="rel_actions_modules" type="relfk"
+	 src-table="public.actions"
+	 dst-table="public.modules"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_modules_apps" type="relfk"
+	 src-table="public.modules"
+	 dst-table="public.apps"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_groups_privileges_modules" type="relfk"
+	 src-table="public.groups_privileges"
+	 dst-table="public.modules"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_users_privileges_modules" type="relfk"
+	 src-table="public.users_privileges"
+	 dst-table="public.modules"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_scopes_users" type="relfk"
+	 src-table="public.scopes"
 	 dst-table="public.users"
 	 src-required="false" dst-required="false"/>
 
-<relationship name="rel_users_scope_cp_groups" type="relfk"
-	 src-table="public.groups_scope"
+<relationship name="rel_scopes_groups" type="relfk"
+	 src-table="public.scopes"
 	 dst-table="public.groups"
-	 src-required="false" dst-required="false"/>
-
-<relationship name="rel_actions_apps" type="relfk"
-	 src-table="public.actions"
-	 dst-table="public.apps"
 	 src-required="false" dst-required="false"/>
 
 </dbmodel>
