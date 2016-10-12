@@ -116,7 +116,7 @@ export default class Users extends Auto_users{
       user_salt: salt
     };
 
-    return this.update(user);
+    return super.update(user);
   }
 
   enable(userId){
