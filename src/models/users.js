@@ -7,13 +7,14 @@
 // password
 // user_salt
 // user_state
+// force_change_password
+// created_at
+// updated_at
 // first_name
 // last_name
 // google_id
 // account_image
 // account_google_url
-// created_at
-// updated_at
 export default function(sequelize, DataTypes) {
   return sequelize.define('users', {
     user_id: {
@@ -48,6 +49,18 @@ export default function(sequelize, DataTypes) {
       allowNull: false,
       defaultValue: "'verifying'",
     },
+    force_change_password: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+    },
+    created_at: {
+      type: DataTypes.DATE,
+      allowNull: false,
+    },
+    updated_at: {
+      type: DataTypes.DATE,
+      allowNull: false,
+    },
     first_name: {
       type: DataTypes.STRING,
       allowNull: true,
@@ -67,14 +80,6 @@ export default function(sequelize, DataTypes) {
     account_google_url: {
       type: DataTypes.STRING,
       allowNull: true,
-    },
-    created_at: {
-      type: DataTypes.DATE,
-      allowNull: false,
-    },
-    updated_at: {
-      type: DataTypes.DATE,
-      allowNull: false,
     },
   }, {
     tableName: 'users',

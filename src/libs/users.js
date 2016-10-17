@@ -87,6 +87,7 @@ export default class Users extends Auto_users{
 
     user.signon_type = user.signon_type || 'local';
     user.user_state = user.user_state || 'verifying';
+    user.force_change_password = user.force_change_password || false;
     var pwdObj = this.security.generatePassword(user.password);
     user.password = pwdObj.hash;
     user.user_salt = pwdObj.salt;
