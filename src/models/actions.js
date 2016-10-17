@@ -1,34 +1,38 @@
 // actions
 //
-// app_apps
-// module_modules
+// action_id
 // action
+// module_id_modules
 // bit_value
+// action_caption
 // action_description
 export default function(sequelize, DataTypes) {
   return sequelize.define('actions', {
-    app_apps: {
-      type: DataTypes.STRING,
+    action_id: {
+      type: DataTypes.INTEGER,
       allowNull: false,
       primaryKey: true,
-      references: {
-        "model": "apps",
-        "key": "app"
-      },
-    },
-    module_modules: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      primaryKey: true,
+      autoIncrement: true,
     },
     action: {
       type: DataTypes.STRING,
+      allowNull: true,
+    },
+    module_id_modules: {
+      type: DataTypes.INTEGER,
       allowNull: false,
-      primaryKey: true,
+      references: {
+        "model": "modules",
+        "key": "module_id"
+      },
     },
     bit_value: {
       type: DataTypes.INTEGER,
       allowNull: false,
+    },
+    action_caption: {
+      type: DataTypes.STRING,
+      allowNull: true,
     },
     action_description: {
       type: DataTypes.TEXT,

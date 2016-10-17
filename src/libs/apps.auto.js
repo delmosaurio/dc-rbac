@@ -12,18 +12,18 @@ export default class Auto_apps {
     return utils.executeModel(this.sequelize, this.models.apps, 'create', [obj]);
   }
   update(obj) {
-    let app = obj.app;
-    delete obj.app;
+    let app_id = obj.app_id;
+    delete obj.app_id;
     let where = {
       where: {
-        app: app,
+        app_id: app_id,
       }
     };
     return utils.executeModel(this.sequelize, this.models.apps, 'update', [obj, where]);
   }
   delete(obj) {
     let params = {
-      app: obj.app,
+      app_id: obj.app_id,
     };
     let where = {
       where: params
@@ -43,9 +43,9 @@ export default class Auto_apps {
     };
     return utils.executeModel(this.sequelize, this.models.apps, 'findOne', [where]);
   }
-  getById(app) {
+  getById(app_id) {
     let params = {
-      app: app,
+      app_id: app_id,
     };
     return this.findOne(params);
   }

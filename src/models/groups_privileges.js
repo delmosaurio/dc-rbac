@@ -1,6 +1,7 @@
 // groups_privileges
 //
 // group_id_groups
+// module_id_modules
 // actions_access_grant
 // actions_access_deny
 export default function(sequelize, DataTypes) {
@@ -12,6 +13,14 @@ export default function(sequelize, DataTypes) {
       references: {
         "model": "groups",
         "key": "group_id"
+      },
+    },
+    module_id_modules: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        "model": "modules",
+        "key": "module_id"
       },
     },
     actions_access_grant: {

@@ -1,21 +1,32 @@
 // modules
 //
+// module_id
 // module
-// app_apps
+// module_caption
+// app_id_apps
 // module_description
 export default function(sequelize, DataTypes) {
   return sequelize.define('modules', {
+    module_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      primaryKey: true,
+      autoIncrement: true,
+    },
     module: {
       type: DataTypes.STRING,
       allowNull: false,
-      primaryKey: true,
     },
-    app_apps: {
+    module_caption: {
       type: DataTypes.STRING,
+      allowNull: true,
+    },
+    app_id_apps: {
+      type: DataTypes.INTEGER,
       allowNull: false,
       references: {
         "model": "apps",
-        "key": "app"
+        "key": "app_id"
       },
     },
     module_description: {

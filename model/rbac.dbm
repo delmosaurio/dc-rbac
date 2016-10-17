@@ -3,7 +3,7 @@
 CAUTION: Do not modify this file unless you know what you are doing.
          Unexpected results may occur if the code is changed deliberately.
 -->
-<dbmodel pgmodeler-ver="0.8.2" last-position="3,0" last-zoom="1"
+<dbmodel pgmodeler-ver="0.8.2" last-position="2,0" last-zoom="1"
 	 default-schema="public" default-owner="postgres">
 <database name="rbac">
 </database>
@@ -48,6 +48,15 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<column name="user_state" not-null="true" default-value="'verifying'">
 		<type name="public.account_state"/>
 	</column>
+	<column name="force_change_password" not-null="true">
+		<type name="bool"/>
+	</column>
+	<column name="created_at" not-null="true">
+		<type name="timestamp"/>
+	</column>
+	<column name="updated_at" not-null="true">
+		<type name="timestamp"/>
+	</column>
 	<column name="first_name">
 		<type name="varchar" length="100"/>
 	</column>
@@ -62,12 +71,6 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	</column>
 	<column name="account_google_url">
 		<type name="varchar" length="200"/>
-	</column>
-	<column name="created_at" not-null="true">
-		<type name="timestamp"/>
-	</column>
-	<column name="updated_at" not-null="true">
-		<type name="timestamp"/>
 	</column>
 	<constraint name="pk_users" type="pk-constr" table="public.users">
 		<columns names="user_id" ref-type="src-columns"/>

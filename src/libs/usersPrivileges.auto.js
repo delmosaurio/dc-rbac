@@ -12,10 +12,13 @@ export default class Auto_usersPrivileges {
     return utils.executeModel(this.sequelize, this.models.usersPrivileges, 'create', [obj]);
   }
   update(obj) {
+    let module_id_modules = obj.module_id_modules;
+    delete obj.module_id_modules;
     let user_id_users = obj.user_id_users;
     delete obj.user_id_users;
     let where = {
       where: {
+        module_id_modules: module_id_modules,
         user_id_users: user_id_users,
       }
     };
@@ -23,6 +26,7 @@ export default class Auto_usersPrivileges {
   }
   delete(obj) {
     let params = {
+      module_id_modules: obj.module_id_modules,
       user_id_users: obj.user_id_users,
     };
     let where = {
@@ -43,8 +47,9 @@ export default class Auto_usersPrivileges {
     };
     return utils.executeModel(this.sequelize, this.models.usersPrivileges, 'findOne', [where]);
   }
-  getById(user_id_users) {
+  getById(module_id_modules, user_id_users) {
     let params = {
+      module_id_modules: module_id_modules,
       user_id_users: user_id_users,
     };
     return this.findOne(params);

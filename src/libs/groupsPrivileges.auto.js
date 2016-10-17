@@ -14,9 +14,12 @@ export default class Auto_groupsPrivileges {
   update(obj) {
     let group_id_groups = obj.group_id_groups;
     delete obj.group_id_groups;
+    let module_id_modules = obj.module_id_modules;
+    delete obj.module_id_modules;
     let where = {
       where: {
         group_id_groups: group_id_groups,
+        module_id_modules: module_id_modules,
       }
     };
     return utils.executeModel(this.sequelize, this.models.groupsPrivileges, 'update', [obj, where]);
@@ -24,6 +27,7 @@ export default class Auto_groupsPrivileges {
   delete(obj) {
     let params = {
       group_id_groups: obj.group_id_groups,
+      module_id_modules: obj.module_id_modules,
     };
     let where = {
       where: params
@@ -43,9 +47,10 @@ export default class Auto_groupsPrivileges {
     };
     return utils.executeModel(this.sequelize, this.models.groupsPrivileges, 'findOne', [where]);
   }
-  getById(group_id_groups) {
+  getById(group_id_groups, module_id_modules) {
     let params = {
       group_id_groups: group_id_groups,
+      module_id_modules: module_id_modules,
     };
     return this.findOne(params);
   }

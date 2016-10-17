@@ -12,26 +12,22 @@ export default class Auto_actions {
     return utils.executeModel(this.sequelize, this.models.actions, 'create', [obj]);
   }
   update(obj) {
-    let action = obj.action;
-    delete obj.action;
-    let app_apps = obj.app_apps;
-    delete obj.app_apps;
-    let module_modules = obj.module_modules;
-    delete obj.module_modules;
+    let action_id = obj.action_id;
+    delete obj.action_id;
+    let module_id_modules = obj.module_id_modules;
+    delete obj.module_id_modules;
     let where = {
       where: {
-        action: action,
-        app_apps: app_apps,
-        module_modules: module_modules,
+        action_id: action_id,
+        module_id_modules: module_id_modules,
       }
     };
     return utils.executeModel(this.sequelize, this.models.actions, 'update', [obj, where]);
   }
   delete(obj) {
     let params = {
-      action: obj.action,
-      app_apps: obj.app_apps,
-      module_modules: obj.module_modules,
+      action_id: obj.action_id,
+      module_id_modules: obj.module_id_modules,
     };
     let where = {
       where: params
@@ -51,11 +47,10 @@ export default class Auto_actions {
     };
     return utils.executeModel(this.sequelize, this.models.actions, 'findOne', [where]);
   }
-  getById(action, app_apps, module_modules) {
+  getById(action_id, module_id_modules) {
     let params = {
-      action: action,
-      app_apps: app_apps,
-      module_modules: module_modules,
+      action_id: action_id,
+      module_id_modules: module_id_modules,
     };
     return this.findOne(params);
   }
