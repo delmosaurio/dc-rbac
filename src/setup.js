@@ -11,8 +11,8 @@ export default function (ops) {
   return function(callback){
     var def = Q.defer();
 
-    var conStringPri = `postgres://${ops.user}:${ops.pwd}@localhost/postgres`;
-    var conStringPost = `postgres://${ops.user}:${ops.pwd}@localhost/${ops.database}`;
+    var conStringPri = `postgres://${ops.user}:${ops.pwd}@${ops.host}:${ops.port}/postgres`;
+    var conStringPost = `postgres://${ops.user}:${ops.pwd}@${ops.host}:${ops.port}/${ops.database}`;
 
     async.waterfall([
       function(cb){

@@ -36,6 +36,7 @@ export default class DcRbac {
     ops = ops || {};
     let db = ops.dbConfig || {};
     db.database = db.database || 'rbac';
+    db.host = db.host || 'localhost'
     db.user = db.user || 'postgres';
     db.port = db.port || 5432;
     db.pwd = db.pwd || '';
@@ -46,6 +47,7 @@ export default class DcRbac {
     this.security = new Security({ secret: this.secret});
     
     this.sequelize = new Sequelize(db.database, db.user, db.pwd, {
+      host: db.host,
       dialect: "postgres",
       port:    db.port,
       timestamps: false,
@@ -57,9 +59,11 @@ export default class DcRbac {
     let database = db.database;
     let user = db.user;
     let pwd = db.pwd;
+    let host = db.host;
+    let port = db.port;
     let structure = path.resolve(path.join(__dirname, '../model/rbac.sql'));
     let functions = path.resolve(path.join(__dirname, '../model/rbac_functions.sql'));
-    this.setup = setup({database, user, pwd, structure, functions});
+    this.setup = setup({database, user, pwd, host, port, structure, functions});
   }
 
   get apps() {
