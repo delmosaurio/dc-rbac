@@ -3,7 +3,7 @@
 CAUTION: Do not modify this file unless you know what you are doing.
          Unexpected results may occur if the code is changed deliberately.
 -->
-<dbmodel pgmodeler-ver="0.8.2" last-position="2,0" last-zoom="1"
+<dbmodel pgmodeler-ver="0.8.2" last-position="1,0" last-zoom="1"
 	 default-schema="public" default-owner="postgres">
 <database name="rbac">
 </database>
@@ -103,7 +103,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 		<type name="public.token_type"/>
 	</column>
 	<column name="expiration" not-null="true">
-		<type name="date"/>
+		<type name="timestamp"/>
 	</column>
 	<column name="token_salt" not-null="true">
 		<type name="varchar" length="100"/>

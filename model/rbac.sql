@@ -71,7 +71,7 @@ CREATE TABLE public.tokens(
 	token varchar(100) NOT NULL,
 	user_id_users integer NOT NULL,
 	type public.token_type NOT NULL,
-	expiration date NOT NULL,
+	expiration timestamp NOT NULL,
 	token_salt varchar(100) NOT NULL,
 	CONSTRAINT pk_tokens PRIMARY KEY (token)
 
