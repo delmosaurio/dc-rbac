@@ -57,8 +57,8 @@ export default class DcRbac {
     let database = db.database;
     let user = db.user;
     let pwd = db.pwd;
-    let structure = path.resolve('./model/rbac.sql');
-    let functions = path.resolve('./model/rbac_functions.sql');
+    let structure = path.resolve(path.join(__dirname, '../model/rbac.sql'));
+    let functions = path.resolve(path.join(__dirname, '../model/rbac_functions.sql'));
     this.setup = setup({database, user, pwd, structure, functions});
   }
 
