@@ -3,7 +3,6 @@
 // action_id
 // action
 // module_id_modules
-// bit_value
 // action_caption
 // action_description
 export default function(sequelize, DataTypes) {
@@ -25,10 +24,6 @@ export default function(sequelize, DataTypes) {
         "model": "modules",
         "key": "module_id"
       },
-    },
-    bit_value: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
     },
     action_caption: {
       type: DataTypes.STRING,

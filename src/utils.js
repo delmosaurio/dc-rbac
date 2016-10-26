@@ -35,6 +35,19 @@ utils.executeModel = (sequelize, owner, fn, params) => {
           return def.resolve(null);
         }
 
+        if (o.count !== undefined && o.rows !== undefined){
+
+          if (o.rows instanceof Array){
+            var mapped = _.map(o.rows, i => {
+              return i.dataValues;
+            });
+            return def.resolve({
+              count: o.count,
+              rows: mapped
+            });
+          }
+        }
+
         if (o.dataValues){
           return def.resolve(o.dataValues, o);
         }

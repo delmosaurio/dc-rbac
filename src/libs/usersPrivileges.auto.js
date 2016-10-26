@@ -12,13 +12,13 @@ export default class Auto_usersPrivileges {
     return utils.executeModel(this.sequelize, this.models.usersPrivileges, 'create', [obj]);
   }
   update(obj) {
-    let module_id_modules = obj.module_id_modules;
-    delete obj.module_id_modules;
+    let action_id_actions = obj.action_id_actions;
+    delete obj.action_id_actions;
     let user_id_users = obj.user_id_users;
     delete obj.user_id_users;
     let where = {
       where: {
-        module_id_modules: module_id_modules,
+        action_id_actions: action_id_actions,
         user_id_users: user_id_users,
       }
     };
@@ -26,7 +26,7 @@ export default class Auto_usersPrivileges {
   }
   delete(obj) {
     let params = {
-      module_id_modules: obj.module_id_modules,
+      action_id_actions: obj.action_id_actions,
       user_id_users: obj.user_id_users,
     };
     let where = {
@@ -34,22 +34,38 @@ export default class Auto_usersPrivileges {
     };
     return utils.executeModel(this.sequelize, this.models.usersPrivileges, 'destroy', [where]);
   }
-  findAll(filters) {
+  findAll(filters, notWhere) {
     filters = filters || {};
     let where = {
       where: filters
     };
+    if (notWhere) {
+      where = filters
+    }
     return utils.executeModel(this.sequelize, this.models.usersPrivileges, 'findAll', [where]);
   }
-  findOne(params) {
+  findAndCountAll(filters, notWhere) {
+    filters = filters || {};
+    let where = {
+      where: filters
+    };
+    if (notWhere) {
+      where = filters
+    }
+    return utils.executeModel(this.sequelize, this.models.usersPrivileges, 'findAndCountAll', [where]);
+  }
+  findOne(params, notWhere) {
     let where = {
       where: params
     };
+    if (notWhere) {
+      where = params
+    }
     return utils.executeModel(this.sequelize, this.models.usersPrivileges, 'findOne', [where]);
   }
-  getById(module_id_modules, user_id_users) {
+  getById(action_id_actions, user_id_users) {
     let params = {
-      module_id_modules: module_id_modules,
+      action_id_actions: action_id_actions,
       user_id_users: user_id_users,
     };
     return this.findOne(params);

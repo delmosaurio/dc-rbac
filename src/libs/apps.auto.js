@@ -30,17 +30,33 @@ export default class Auto_apps {
     };
     return utils.executeModel(this.sequelize, this.models.apps, 'destroy', [where]);
   }
-  findAll(filters) {
+  findAll(filters, notWhere) {
     filters = filters || {};
     let where = {
       where: filters
     };
+    if (notWhere) {
+      where = filters
+    }
     return utils.executeModel(this.sequelize, this.models.apps, 'findAll', [where]);
   }
-  findOne(params) {
+  findAndCountAll(filters, notWhere) {
+    filters = filters || {};
+    let where = {
+      where: filters
+    };
+    if (notWhere) {
+      where = filters
+    }
+    return utils.executeModel(this.sequelize, this.models.apps, 'findAndCountAll', [where]);
+  }
+  findOne(params, notWhere) {
     let where = {
       where: params
     };
+    if (notWhere) {
+      where = params
+    }
     return utils.executeModel(this.sequelize, this.models.apps, 'findOne', [where]);
   }
   getById(app_id) {

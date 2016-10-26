@@ -1,9 +1,9 @@
 // groups_privileges
 //
 // group_id_groups
-// module_id_modules
-// actions_access_grant
-// actions_access_deny
+// action_id_actions
+// action_grant
+// action_deny
 export default function(sequelize, DataTypes) {
   return sequelize.define('groups_privileges', {
     group_id_groups: {
@@ -15,20 +15,20 @@ export default function(sequelize, DataTypes) {
         "key": "group_id"
       },
     },
-    module_id_modules: {
+    action_id_actions: {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
-        "model": "modules",
-        "key": "module_id"
+        "model": "actions",
+        "key": "action_id"
       },
     },
-    actions_access_grant: {
-      type: DataTypes.INTEGER,
+    action_grant: {
+      type: DataTypes.BOOLEAN,
       allowNull: false,
     },
-    actions_access_deny: {
-      type: DataTypes.INTEGER,
+    action_deny: {
+      type: DataTypes.BOOLEAN,
       allowNull: false,
     },
   }, {

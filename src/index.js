@@ -10,6 +10,8 @@ import Apps from './libs/apps';
 import Users from './libs/users';
 import Tokens from './libs/tokens';
 import Groups from './libs/groups';
+import Modules from './libs/modules';
+import Actions from './libs/actions';
 
 /**
  * La clase DcRbac encapsula los metodos necesario
@@ -71,6 +73,20 @@ export default class DcRbac {
       this._apps = new Apps(this);
     }
     return this._apps;
+  }
+
+  get modules() {
+    if (!this._modules){
+      this._modules = new Modules(this);
+    }
+    return this._modules;
+  }
+
+  get actions() {
+    if (!this._actions){
+      this._actions = new Actions(this);
+    }
+    return this._actions;
   }
 
   get users() {

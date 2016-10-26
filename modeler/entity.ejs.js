@@ -62,9 +62,12 @@ export default class Auto_<%= _.camelCase(name) %> {
     );
   }
 
-  findAll(filters){
+  findAll(filters, notWhere){
     filters = filters || {};
     let where = { where : filters };
+    if (notWhere){
+      where = filters
+    }
     return utils.executeModel(
       this.sequelize,
       this.models.<%=_.camelCase(name) %>,
@@ -73,10 +76,27 @@ export default class Auto_<%= _.camelCase(name) %> {
     );
   }
 
-  findOne(params){
+  findAndCountAll(filters, notWhere){
+    filters = filters || {};
+    let where = { where : filters };
+    if (notWhere){
+      where = filters
+    }
+    return utils.executeModel(
+      this.sequelize,
+      this.models.<%=_.camelCase(name) %>,
+      'findAndCountAll',
+      [where]
+    );
+  }
+
+  findOne(params, notWhere){
     let where = { 
       where : params
     };
+    if (notWhere){
+      where = params
+    }
     return utils.executeModel(
       this.sequelize,
       this.models.<%=_.camelCase(name) %>,

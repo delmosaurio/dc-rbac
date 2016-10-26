@@ -34,17 +34,33 @@ export default class Auto_tokens {
     };
     return utils.executeModel(this.sequelize, this.models.tokens, 'destroy', [where]);
   }
-  findAll(filters) {
+  findAll(filters, notWhere) {
     filters = filters || {};
     let where = {
       where: filters
     };
+    if (notWhere) {
+      where = filters
+    }
     return utils.executeModel(this.sequelize, this.models.tokens, 'findAll', [where]);
   }
-  findOne(params) {
+  findAndCountAll(filters, notWhere) {
+    filters = filters || {};
+    let where = {
+      where: filters
+    };
+    if (notWhere) {
+      where = filters
+    }
+    return utils.executeModel(this.sequelize, this.models.tokens, 'findAndCountAll', [where]);
+  }
+  findOne(params, notWhere) {
     let where = {
       where: params
     };
+    if (notWhere) {
+      where = params
+    }
     return utils.executeModel(this.sequelize, this.models.tokens, 'findOne', [where]);
   }
   getById(token, user_id_users) {

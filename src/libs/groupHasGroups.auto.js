@@ -34,17 +34,33 @@ export default class Auto_groupHasGroups {
     };
     return utils.executeModel(this.sequelize, this.models.groupHasGroups, 'destroy', [where]);
   }
-  findAll(filters) {
+  findAll(filters, notWhere) {
     filters = filters || {};
     let where = {
       where: filters
     };
+    if (notWhere) {
+      where = filters
+    }
     return utils.executeModel(this.sequelize, this.models.groupHasGroups, 'findAll', [where]);
   }
-  findOne(params) {
+  findAndCountAll(filters, notWhere) {
+    filters = filters || {};
+    let where = {
+      where: filters
+    };
+    if (notWhere) {
+      where = filters
+    }
+    return utils.executeModel(this.sequelize, this.models.groupHasGroups, 'findAndCountAll', [where]);
+  }
+  findOne(params, notWhere) {
     let where = {
       where: params
     };
+    if (notWhere) {
+      where = params
+    }
     return utils.executeModel(this.sequelize, this.models.groupHasGroups, 'findOne', [where]);
   }
   getById(group_id_groups, has_group_id) {

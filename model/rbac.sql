@@ -155,7 +155,6 @@ CREATE TABLE public.actions(
 	action_id serial NOT NULL,
 	action varchar(30),
 	module_id_modules integer NOT NULL,
-	bit_value smallint NOT NULL,
 	action_caption varchar(30),
 	action_description text,
 	CONSTRAINT pk_actions PRIMARY KEY (action_id),
@@ -178,10 +177,10 @@ ALTER TYPE public.role_type OWNER TO postgres;
 -- DROP TABLE IF EXISTS public.users_privileges CASCADE;
 CREATE TABLE public.users_privileges(
 	user_id_users integer NOT NULL,
-	module_id_modules integer NOT NULL,
-	actions_access_grant integer NOT NULL,
-	actions_access_deny integer NOT NULL,
-	CONSTRAINT pk_users_privileges PRIMARY KEY (user_id_users,module_id_modules)
+	action_id_actions integer NOT NULL,
+	action_grant integer NOT NULL,
+	action_deny integer NOT NULL,
+	CONSTRAINT pk_users_privileges PRIMARY KEY (user_id_users,action_id_actions)
 
 );
 -- ddl-end --
@@ -192,10 +191,10 @@ ALTER TABLE public.users_privileges OWNER TO postgres;
 -- DROP TABLE IF EXISTS public.groups_privileges CASCADE;
 CREATE TABLE public.groups_privileges(
 	group_id_groups integer NOT NULL,
-	module_id_modules integer NOT NULL,
-	actions_access_grant integer NOT NULL,
-	actions_access_deny integer NOT NULL,
-	CONSTRAINT pk_groups_privileges PRIMARY KEY (group_id_groups,module_id_modules)
+	action_id_actions integer NOT NULL,
+	action_grant bool NOT NULL,
+	action_deny bool NOT NULL,
+	CONSTRAINT pk_groups_privileges PRIMARY KEY (group_id_groups,action_id_actions)
 
 );
 -- ddl-end --
@@ -273,10 +272,10 @@ REFERENCES public.users (user_id) MATCH FULL
 ON DELETE NO ACTION ON UPDATE NO ACTION;
 -- ddl-end --
 
--- object: fk_users_privileges_modules | type: CONSTRAINT --
--- ALTER TABLE public.users_privileges DROP CONSTRAINT IF EXISTS fk_users_privileges_modules CASCADE;
-ALTER TABLE public.users_privileges ADD CONSTRAINT fk_users_privileges_modules FOREIGN KEY (module_id_modules)
-REFERENCES public.modules (module_id) MATCH FULL
+-- object: fk_users_privileges_actions | type: CONSTRAINT --
+-- ALTER TABLE public.users_privileges DROP CONSTRAINT IF EXISTS fk_users_privileges_actions CASCADE;
+ALTER TABLE public.users_privileges ADD CONSTRAINT fk_users_privileges_actions FOREIGN KEY (action_id_actions)
+REFERENCES public.actions (action_id) MATCH FULL
 ON DELETE NO ACTION ON UPDATE NO ACTION;
 -- ddl-end --
 
@@ -287,10 +286,10 @@ REFERENCES public.groups (group_id) MATCH FULL
 ON DELETE NO ACTION ON UPDATE NO ACTION;
 -- ddl-end --
 
--- object: fk_groups_privileges_modules | type: CONSTRAINT --
--- ALTER TABLE public.groups_privileges DROP CONSTRAINT IF EXISTS fk_groups_privileges_modules CASCADE;
-ALTER TABLE public.groups_privileges ADD CONSTRAINT fk_groups_privileges_modules FOREIGN KEY (module_id_modules)
-REFERENCES public.modules (module_id) MATCH FULL
+-- object: fk_groups_privileges_actions | type: CONSTRAINT --
+-- ALTER TABLE public.groups_privileges DROP CONSTRAINT IF EXISTS fk_groups_privileges_actions CASCADE;
+ALTER TABLE public.groups_privileges ADD CONSTRAINT fk_groups_privileges_actions FOREIGN KEY (action_id_actions)
+REFERENCES public.actions (action_id) MATCH FULL
 ON DELETE NO ACTION ON UPDATE NO ACTION;
 -- ddl-end --
 

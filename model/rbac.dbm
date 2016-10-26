@@ -3,7 +3,7 @@
 CAUTION: Do not modify this file unless you know what you are doing.
          Unexpected results may occur if the code is changed deliberately.
 -->
-<dbmodel pgmodeler-ver="0.8.2" last-position="1,0" last-zoom="1"
+<dbmodel pgmodeler-ver="0.8.2" last-position="0,0" last-zoom="1"
 	 default-schema="public" default-owner="postgres">
 <database name="rbac">
 </database>
@@ -228,9 +228,6 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<column name="module_id_modules" not-null="true">
 		<type name="integer"/>
 	</column>
-	<column name="bit_value" not-null="true">
-		<type name="smallint"/>
-	</column>
 	<column name="action_caption">
 		<type name="varchar" length="30"/>
 	</column>
@@ -254,42 +251,42 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="users_privileges">
 	<schema name="public"/>
 	<role name="postgres"/>
-	<position x="480" y="480"/>
+	<position x="460" y="500"/>
 	<column name="user_id_users" not-null="true">
 		<type name="integer"/>
 	</column>
-	<column name="module_id_modules" not-null="true">
+	<column name="action_id_actions" not-null="true">
 		<type name="integer"/>
 	</column>
-	<column name="actions_access_grant" not-null="true">
+	<column name="action_grant" not-null="true">
 		<type name="integer"/>
 	</column>
-	<column name="actions_access_deny" not-null="true">
+	<column name="action_deny" not-null="true">
 		<type name="integer"/>
 	</column>
 	<constraint name="pk_users_privileges" type="pk-constr" table="public.users_privileges">
-		<columns names="user_id_users,module_id_modules" ref-type="src-columns"/>
+		<columns names="user_id_users,action_id_actions" ref-type="src-columns"/>
 	</constraint>
 </table>
 
 <table name="groups_privileges">
 	<schema name="public"/>
 	<role name="postgres"/>
-	<position x="480" y="380"/>
+	<position x="460" y="380"/>
 	<column name="group_id_groups" not-null="true">
 		<type name="integer"/>
 	</column>
-	<column name="module_id_modules" not-null="true">
+	<column name="action_id_actions" not-null="true">
 		<type name="integer"/>
 	</column>
-	<column name="actions_access_grant" not-null="true">
-		<type name="integer"/>
+	<column name="action_grant" not-null="true">
+		<type name="bool"/>
 	</column>
-	<column name="actions_access_deny" not-null="true">
-		<type name="integer"/>
+	<column name="action_deny" not-null="true">
+		<type name="bool"/>
 	</column>
 	<constraint name="pk_groups_privileges" type="pk-constr" table="public.groups_privileges">
-		<columns names="group_id_groups,module_id_modules" ref-type="src-columns"/>
+		<columns names="group_id_groups,action_id_actions" ref-type="src-columns"/>
 	</constraint>
 </table>
 
@@ -365,10 +362,10 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<columns names="user_id" ref-type="dst-columns"/>
 </constraint>
 
-<constraint name="fk_users_privileges_modules" type="fk-constr" comparison-type="MATCH FULL"
-	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.modules" table="public.users_privileges">
-	<columns names="module_id_modules" ref-type="src-columns"/>
-	<columns names="module_id" ref-type="dst-columns"/>
+<constraint name="fk_users_privileges_actions" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.actions" table="public.users_privileges">
+	<columns names="action_id_actions" ref-type="src-columns"/>
+	<columns names="action_id" ref-type="dst-columns"/>
 </constraint>
 
 <constraint name="fk_groups_privileges_groups" type="fk-constr" comparison-type="MATCH FULL"
@@ -377,10 +374,10 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<columns names="group_id" ref-type="dst-columns"/>
 </constraint>
 
-<constraint name="fk_groups_privileges_modules" type="fk-constr" comparison-type="MATCH FULL"
-	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.modules" table="public.groups_privileges">
-	<columns names="module_id_modules" ref-type="src-columns"/>
-	<columns names="module_id" ref-type="dst-columns"/>
+<constraint name="fk_groups_privileges_actions" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.actions" table="public.groups_privileges">
+	<columns names="action_id_actions" ref-type="src-columns"/>
+	<columns names="action_id" ref-type="dst-columns"/>
 </constraint>
 
 <constraint name="fk_scopes_users" type="fk-constr" comparison-type="MATCH FULL"
@@ -435,16 +432,6 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	 dst-table="public.apps"
 	 src-required="false" dst-required="false"/>
 
-<relationship name="rel_groups_privileges_modules" type="relfk"
-	 src-table="public.groups_privileges"
-	 dst-table="public.modules"
-	 src-required="false" dst-required="false"/>
-
-<relationship name="rel_users_privileges_modules" type="relfk"
-	 src-table="public.users_privileges"
-	 dst-table="public.modules"
-	 src-required="false" dst-required="false"/>
-
 <relationship name="rel_scopes_users" type="relfk"
 	 src-table="public.scopes"
 	 dst-table="public.users"
@@ -454,5 +441,19 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	 src-table="public.scopes"
 	 dst-table="public.groups"
 	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_groups_privileges_actions" type="relfk"
+	 src-table="public.groups_privileges"
+	 dst-table="public.actions"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_users_privileges_actions" type="relfk"
+	 src-table="public.users_privileges"
+	 dst-table="public.actions"
+	 src-required="false" dst-required="false">
+	<label ref-type="name-label">
+		<position x="0" y="0"/>
+	</label>
+</relationship>
 
 </dbmodel>

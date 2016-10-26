@@ -12,45 +12,61 @@ export default class Auto_groupsPrivileges {
     return utils.executeModel(this.sequelize, this.models.groupsPrivileges, 'create', [obj]);
   }
   update(obj) {
+    let action_id_actions = obj.action_id_actions;
+    delete obj.action_id_actions;
     let group_id_groups = obj.group_id_groups;
     delete obj.group_id_groups;
-    let module_id_modules = obj.module_id_modules;
-    delete obj.module_id_modules;
     let where = {
       where: {
+        action_id_actions: action_id_actions,
         group_id_groups: group_id_groups,
-        module_id_modules: module_id_modules,
       }
     };
     return utils.executeModel(this.sequelize, this.models.groupsPrivileges, 'update', [obj, where]);
   }
   delete(obj) {
     let params = {
+      action_id_actions: obj.action_id_actions,
       group_id_groups: obj.group_id_groups,
-      module_id_modules: obj.module_id_modules,
     };
     let where = {
       where: params
     };
     return utils.executeModel(this.sequelize, this.models.groupsPrivileges, 'destroy', [where]);
   }
-  findAll(filters) {
+  findAll(filters, notWhere) {
     filters = filters || {};
     let where = {
       where: filters
     };
+    if (notWhere) {
+      where = filters
+    }
     return utils.executeModel(this.sequelize, this.models.groupsPrivileges, 'findAll', [where]);
   }
-  findOne(params) {
+  findAndCountAll(filters, notWhere) {
+    filters = filters || {};
+    let where = {
+      where: filters
+    };
+    if (notWhere) {
+      where = filters
+    }
+    return utils.executeModel(this.sequelize, this.models.groupsPrivileges, 'findAndCountAll', [where]);
+  }
+  findOne(params, notWhere) {
     let where = {
       where: params
     };
+    if (notWhere) {
+      where = params
+    }
     return utils.executeModel(this.sequelize, this.models.groupsPrivileges, 'findOne', [where]);
   }
-  getById(group_id_groups, module_id_modules) {
+  getById(action_id_actions, group_id_groups) {
     let params = {
+      action_id_actions: action_id_actions,
       group_id_groups: group_id_groups,
-      module_id_modules: module_id_modules,
     };
     return this.findOne(params);
   }

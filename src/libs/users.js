@@ -57,10 +57,10 @@ export default class Users extends Auto_users{
             .update(obj);
   }
 
-  findAll(filters) {
+  findAll(filters, notWhere) {
     var def = Q.defer();
     super
-      .findAll(filters)
+      .findAll(filters, notWhere)
       .then(res => {
         def.resolve(_map(res));
       })
@@ -70,10 +70,26 @@ export default class Users extends Auto_users{
     return def.promise;
   }
 
-  findOne(params) {
+  findAndCountAll(filters, notWhere) {
     var def = Q.defer();
     super
-      .findOne(params)
+      .findAndCountAll(filters, notWhere)
+      .then(res => {
+        def.resolve({
+          count: res.count,
+          rows: _map(res.rows)
+        });
+      })
+      .catch( err => {
+        def.reject(err);
+      });
+    return def.promise;
+  }
+
+  findOne(params, notWhere) {
+    var def = Q.defer();
+    super
+      .findOne(params, notWhere)
       .then(res => {
         def.resolve(_map(res));
       })
