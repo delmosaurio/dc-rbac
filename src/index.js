@@ -12,6 +12,8 @@ import Tokens from './libs/tokens';
 import Groups from './libs/groups';
 import Modules from './libs/modules';
 import Actions from './libs/actions';
+import GroupsPrivileges from './libs/groupsPrivileges';
+import Scopes from './libs/scopes';
 
 /**
  * La clase DcRbac encapsula los metodos necesario
@@ -80,6 +82,20 @@ export default class DcRbac {
       this._modules = new Modules(this);
     }
     return this._modules;
+  }
+
+  get groupsPrivileges() {
+    if (!this._groupsPrivileges){
+      this._groupsPrivileges = new GroupsPrivileges(this);
+    }
+    return this._groupsPrivileges;
+  }
+
+  get scopes() {
+    if (!this._scopes){
+      this._scopes = new Scopes(this);
+    }
+    return this._scopes;
   }
 
   get actions() {
