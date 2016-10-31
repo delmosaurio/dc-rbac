@@ -1,25 +1,16 @@
-// scopes
+// global_scopes
 //
-// user_id_users
 // group_id_groups
 // target
 // target_id
 // rule_access
 // rule_deny
 export default function(sequelize, DataTypes) {
-  return sequelize.define('scopes', {
-    user_id_users: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      primaryKey: true,
-      references: {
-        "model": "users",
-        "key": "user_id"
-      },
-    },
+  return sequelize.define('global_scopes', {
     group_id_groups: {
       type: DataTypes.INTEGER,
       allowNull: false,
+      primaryKey: true,
       references: {
         "model": "groups",
         "key": "group_id"
@@ -43,7 +34,7 @@ export default function(sequelize, DataTypes) {
       allowNull: true,
     },
   }, {
-    tableName: 'scopes',
+    tableName: 'global_scopes',
     timestamps: false,
     freezeTableName: true,
   });

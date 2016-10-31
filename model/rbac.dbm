@@ -3,7 +3,7 @@
 CAUTION: Do not modify this file unless you know what you are doing.
          Unexpected results may occur if the code is changed deliberately.
 -->
-<dbmodel pgmodeler-ver="0.8.2" last-position="0,0" last-zoom="1"
+<dbmodel pgmodeler-ver="0.8.2" last-position="0,1" last-zoom="1"
 	 default-schema="public" default-owner="postgres">
 <database name="rbac">
 </database>
@@ -26,7 +26,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="users">
 	<schema name="public"/>
 	<role name="postgres"/>
-	<position x="40" y="80"/>
+	<position x="20" y="20"/>
 	<column name="user_id" not-null="true">
 		<type name="bigserial"/>
 	</column>
@@ -116,7 +116,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="apps">
 	<schema name="public"/>
 	<role name="postgres"/>
-	<position x="840" y="120"/>
+	<position x="860" y="40"/>
 	<column name="app_id" not-null="true">
 		<type name="serial"/>
 	</column>
@@ -128,6 +128,15 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	</column>
 	<column name="app_description">
 		<type name="text"/>
+	</column>
+	<column name="client_id" not-null="true">
+		<type name="varchar" length="200"/>
+	</column>
+	<column name="client_secret" not-null="true">
+		<type name="varchar" length="200"/>
+	</column>
+	<column name="redirect_uris" not-null="true">
+		<type name="varchar" length="200"/>
 	</column>
 	<constraint name="pk_app" type="pk-constr" table="public.apps">
 		<columns names="app_id" ref-type="src-columns"/>
@@ -251,7 +260,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="users_privileges">
 	<schema name="public"/>
 	<role name="postgres"/>
-	<position x="460" y="500"/>
+	<position x="440" y="480"/>
 	<column name="user_id_users" not-null="true">
 		<type name="integer"/>
 	</column>
@@ -293,7 +302,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="scopes">
 	<schema name="public"/>
 	<role name="postgres"/>
-	<position x="100" y="380"/>
+	<position x="20" y="300"/>
 	<column name="user_id_users" not-null="true">
 		<type name="integer"/>
 	</column>
@@ -301,7 +310,10 @@ CAUTION: Do not modify this file unless you know what you are doing.
 		<type name="integer"/>
 	</column>
 	<column name="target" not-null="true">
-		<type name="varchar" length="20"/>
+		<type name="varchar" length="50"/>
+	</column>
+	<column name="target_id" not-null="true">
+		<type name="varchar" length="50"/>
 	</column>
 	<column name="rule_access">
 		<type name="json"/>
@@ -310,7 +322,31 @@ CAUTION: Do not modify this file unless you know what you are doing.
 		<type name="json"/>
 	</column>
 	<constraint name="pk_scopes" type="pk-constr" table="public.scopes">
-		<columns names="user_id_users,group_id_groups" ref-type="src-columns"/>
+		<columns names="user_id_users,group_id_groups,target" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="global_scopes">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="100" y="440"/>
+	<column name="group_id_groups" not-null="true">
+		<type name="integer"/>
+	</column>
+	<column name="target" not-null="true">
+		<type name="varchar" length="50"/>
+	</column>
+	<column name="target_id" not-null="true">
+		<type name="varchar" length="50"/>
+	</column>
+	<column name="rule_access">
+		<type name="json"/>
+	</column>
+	<column name="rule_deny">
+		<type name="json"/>
+	</column>
+	<constraint name="pk_global_scopes" type="pk-constr" table="public.global_scopes">
+		<columns names="group_id_groups,target" ref-type="src-columns"/>
 	</constraint>
 </table>
 
@@ -392,6 +428,12 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<columns names="group_id" ref-type="dst-columns"/>
 </constraint>
 
+<constraint name="fk_global_scopes_groups" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.groups" table="public.global_scopes">
+	<columns names="group_id_groups" ref-type="src-columns"/>
+	<columns names="group_id" ref-type="dst-columns"/>
+</constraint>
+
 <relationship name="rel_tokens_users" type="relfk"
 	 src-table="public.tokens"
 	 dst-table="public.users"
@@ -455,5 +497,10 @@ CAUTION: Do not modify this file unless you know what you are doing.
 		<position x="0" y="0"/>
 	</label>
 </relationship>
+
+<relationship name="rel_global_scopes_groups" type="relfk"
+	 src-table="public.global_scopes"
+	 dst-table="public.groups"
+	 src-required="false" dst-required="false"/>
 
 </dbmodel>

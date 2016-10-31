@@ -1,42 +1,38 @@
 'use strict';
-// import Auto_scopes from './scopes.auto.js';
+// import Auto_globalScopes from './globalScopes.auto.js';
 import Q from 'q';
 import utils from '../utils';
-export default class Auto_scopes {
+export default class Auto_globalScopes {
   constructor(owner) {
     this.sequelize = owner.sequelize;
     this.models = owner.models;
     this.security = owner.security;
   }
   create(obj) {
-    return utils.executeModel(this.sequelize, this.models.scopes, 'create', [obj]);
+    return utils.executeModel(this.sequelize, this.models.globalScopes, 'create', [obj]);
   }
   update(obj) {
     let group_id_groups = obj.group_id_groups;
     delete obj.group_id_groups;
     let target = obj.target;
     delete obj.target;
-    let user_id_users = obj.user_id_users;
-    delete obj.user_id_users;
     let where = {
       where: {
         group_id_groups: group_id_groups,
         target: target,
-        user_id_users: user_id_users,
       }
     };
-    return utils.executeModel(this.sequelize, this.models.scopes, 'update', [obj, where]);
+    return utils.executeModel(this.sequelize, this.models.globalScopes, 'update', [obj, where]);
   }
   delete(obj) {
     let params = {
       group_id_groups: obj.group_id_groups,
       target: obj.target,
-      user_id_users: obj.user_id_users,
     };
     let where = {
       where: params
     };
-    return utils.executeModel(this.sequelize, this.models.scopes, 'destroy', [where]);
+    return utils.executeModel(this.sequelize, this.models.globalScopes, 'destroy', [where]);
   }
   findAll(filters, notWhere) {
     filters = filters || {};
@@ -46,7 +42,7 @@ export default class Auto_scopes {
     if (notWhere) {
       where = filters
     }
-    return utils.executeModel(this.sequelize, this.models.scopes, 'findAll', [where]);
+    return utils.executeModel(this.sequelize, this.models.globalScopes, 'findAll', [where]);
   }
   findAndCountAll(filters, notWhere) {
     filters = filters || {};
@@ -56,7 +52,7 @@ export default class Auto_scopes {
     if (notWhere) {
       where = filters
     }
-    return utils.executeModel(this.sequelize, this.models.scopes, 'findAndCountAll', [where]);
+    return utils.executeModel(this.sequelize, this.models.globalScopes, 'findAndCountAll', [where]);
   }
   findOne(params, notWhere) {
     let where = {
@@ -65,13 +61,12 @@ export default class Auto_scopes {
     if (notWhere) {
       where = params
     }
-    return utils.executeModel(this.sequelize, this.models.scopes, 'findOne', [where]);
+    return utils.executeModel(this.sequelize, this.models.globalScopes, 'findOne', [where]);
   }
-  getById(group_id_groups, target, user_id_users) {
+  getById(group_id_groups, target) {
     let params = {
       group_id_groups: group_id_groups,
       target: target,
-      user_id_users: user_id_users,
     };
     return this.findOne(params);
   }

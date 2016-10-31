@@ -87,6 +87,9 @@ CREATE TABLE public.apps(
 	app varchar(10),
 	app_caption varchar(100) NOT NULL,
 	app_description text,
+	client_id varchar(200) NOT NULL,
+	client_secret varchar(200) NOT NULL,
+	redirect_uris varchar(200) NOT NULL,
 	CONSTRAINT pk_app PRIMARY KEY (app_id),
 	CONSTRAINT uq_apps UNIQUE (app)
 
@@ -206,14 +209,30 @@ ALTER TABLE public.groups_privileges OWNER TO postgres;
 CREATE TABLE public.scopes(
 	user_id_users integer NOT NULL,
 	group_id_groups integer NOT NULL,
-	target varchar(20) NOT NULL,
+	target varchar(50) NOT NULL,
+	target_id varchar(50) NOT NULL,
 	rule_access json,
 	rule_deny json,
-	CONSTRAINT pk_scopes PRIMARY KEY (user_id_users,group_id_groups)
+	CONSTRAINT pk_scopes PRIMARY KEY (user_id_users,group_id_groups,target)
 
 );
 -- ddl-end --
 ALTER TABLE public.scopes OWNER TO postgres;
+-- ddl-end --
+
+-- object: public.global_scopes | type: TABLE --
+-- DROP TABLE IF EXISTS public.global_scopes CASCADE;
+CREATE TABLE public.global_scopes(
+	group_id_groups integer NOT NULL,
+	target varchar(50) NOT NULL,
+	target_id varchar(50) NOT NULL,
+	rule_access json,
+	rule_deny json,
+	CONSTRAINT pk_global_scopes PRIMARY KEY (group_id_groups,target)
+
+);
+-- ddl-end --
+ALTER TABLE public.global_scopes OWNER TO postgres;
 -- ddl-end --
 
 -- object: fk_tokes_users | type: CONSTRAINT --
@@ -303,6 +322,13 @@ ON DELETE NO ACTION ON UPDATE NO ACTION;
 -- object: fk_scopes_groups | type: CONSTRAINT --
 -- ALTER TABLE public.scopes DROP CONSTRAINT IF EXISTS fk_scopes_groups CASCADE;
 ALTER TABLE public.scopes ADD CONSTRAINT fk_scopes_groups FOREIGN KEY (group_id_groups)
+REFERENCES public.groups (group_id) MATCH FULL
+ON DELETE NO ACTION ON UPDATE NO ACTION;
+-- ddl-end --
+
+-- object: fk_global_scopes_groups | type: CONSTRAINT --
+-- ALTER TABLE public.global_scopes DROP CONSTRAINT IF EXISTS fk_global_scopes_groups CASCADE;
+ALTER TABLE public.global_scopes ADD CONSTRAINT fk_global_scopes_groups FOREIGN KEY (group_id_groups)
 REFERENCES public.groups (group_id) MATCH FULL
 ON DELETE NO ACTION ON UPDATE NO ACTION;
 -- ddl-end --

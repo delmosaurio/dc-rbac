@@ -14,6 +14,7 @@ import Modules from './libs/modules';
 import Actions from './libs/actions';
 import GroupsPrivileges from './libs/groupsPrivileges';
 import Scopes from './libs/scopes';
+import GlobalScopes from './libs/globalScopes';
 
 /**
  * La clase DcRbac encapsula los metodos necesario
@@ -96,6 +97,13 @@ export default class DcRbac {
       this._scopes = new Scopes(this);
     }
     return this._scopes;
+  }
+
+  get globalScopes() {
+    if (!this._globalScopes){
+      this._globalScopes = new GlobalScopes(this);
+    }
+    return this._globalScopes;
   }
 
   get actions() {
