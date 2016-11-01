@@ -72,6 +72,7 @@ function build(err){
             //  return icb(null);
             //}
             var params = generator.buildParams(auto, tname);
+            console.log(tname);
             //if (tname === 'actions'){
             //  //console.log(auto.tables[tname]);
             //}

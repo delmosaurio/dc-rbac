@@ -84,8 +84,8 @@ ALTER TABLE public.tokens OWNER TO postgres;
 -- DROP TABLE IF EXISTS public.apps CASCADE;
 CREATE TABLE public.apps(
 	app_id serial NOT NULL,
-	app varchar(10),
-	app_caption varchar(100) NOT NULL,
+	app varchar(30),
+	app_caption varchar(30) NOT NULL,
 	app_description text,
 	client_id varchar(200) NOT NULL,
 	client_secret varchar(200) NOT NULL,
@@ -140,8 +140,8 @@ ALTER TABLE public.group_has_groups OWNER TO postgres;
 -- DROP TABLE IF EXISTS public.modules CASCADE;
 CREATE TABLE public.modules(
 	module_id serial NOT NULL,
-	module varchar(20) NOT NULL,
-	module_caption varchar(20),
+	module varchar(30) NOT NULL,
+	module_caption varchar(30),
 	app_id_apps integer NOT NULL,
 	module_description text,
 	CONSTRAINT pk_modules PRIMARY KEY (module_id),
