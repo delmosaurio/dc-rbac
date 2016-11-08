@@ -13,6 +13,7 @@ import Groups from './libs/groups';
 import Modules from './libs/modules';
 import Actions from './libs/actions';
 import GroupsPrivileges from './libs/groupsPrivileges';
+import UsersPrivileges from './libs/usersPrivileges';
 import Scopes from './libs/scopes';
 import GlobalScopes from './libs/globalScopes';
 
@@ -90,6 +91,13 @@ export default class DcRbac {
       this._groupsPrivileges = new GroupsPrivileges(this);
     }
     return this._groupsPrivileges;
+  }
+
+  get usersPrivileges() {
+    if (!this._usersPrivileges){
+      this._usersPrivileges = new UsersPrivileges(this);
+    }
+    return this._usersPrivileges;
   }
 
   get scopes() {

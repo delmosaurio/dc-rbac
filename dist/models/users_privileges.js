@@ -24,11 +24,11 @@ exports.default = function (sequelize, DataTypes) {
       }
     },
     action_grant: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.BOOLEAN,
       allowNull: false
     },
     action_deny: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.BOOLEAN,
       allowNull: false
     }
   }, {

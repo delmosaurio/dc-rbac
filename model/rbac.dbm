@@ -3,7 +3,7 @@
 CAUTION: Do not modify this file unless you know what you are doing.
          Unexpected results may occur if the code is changed deliberately.
 -->
-<dbmodel pgmodeler-ver="0.8.2" last-position="0,0" last-zoom="1"
+<dbmodel pgmodeler-ver="0.8.2" last-position="0,174" last-zoom="1"
 	 default-schema="public" default-owner="postgres">
 <database name="rbac">
 </database>
@@ -268,10 +268,10 @@ CAUTION: Do not modify this file unless you know what you are doing.
 		<type name="integer"/>
 	</column>
 	<column name="action_grant" not-null="true">
-		<type name="integer"/>
+		<type name="bool"/>
 	</column>
 	<column name="action_deny" not-null="true">
-		<type name="integer"/>
+		<type name="bool"/>
 	</column>
 	<constraint name="pk_users_privileges" type="pk-constr" table="public.users_privileges">
 		<columns names="user_id_users,action_id_actions" ref-type="src-columns"/>

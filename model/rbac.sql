@@ -181,8 +181,8 @@ ALTER TYPE public.role_type OWNER TO postgres;
 CREATE TABLE public.users_privileges(
 	user_id_users integer NOT NULL,
 	action_id_actions integer NOT NULL,
-	action_grant integer NOT NULL,
-	action_deny integer NOT NULL,
+	action_grant bool NOT NULL,
+	action_deny bool NOT NULL,
 	CONSTRAINT pk_users_privileges PRIMARY KEY (user_id_users,action_id_actions)
 
 );

@@ -66,6 +66,10 @@ var _groupsPrivileges = require('./libs/groupsPrivileges');
 
 var _groupsPrivileges2 = _interopRequireDefault(_groupsPrivileges);
 
+var _usersPrivileges = require('./libs/usersPrivileges');
+
+var _usersPrivileges2 = _interopRequireDefault(_usersPrivileges);
+
 var _scopes = require('./libs/scopes');
 
 var _scopes2 = _interopRequireDefault(_scopes);
@@ -158,6 +162,14 @@ var DcRbac = function () {
         this._groupsPrivileges = new _groupsPrivileges2.default(this);
       }
       return this._groupsPrivileges;
+    }
+  }, {
+    key: 'usersPrivileges',
+    get: function get() {
+      if (!this._usersPrivileges) {
+        this._usersPrivileges = new _usersPrivileges2.default(this);
+      }
+      return this._usersPrivileges;
     }
   }, {
     key: 'scopes',
