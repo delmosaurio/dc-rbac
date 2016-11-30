@@ -70,13 +70,21 @@ var _usersPrivileges = require('./libs/usersPrivileges');
 
 var _usersPrivileges2 = _interopRequireDefault(_usersPrivileges);
 
-var _scopes = require('./libs/scopes');
+var _objectTypes = require('./libs/objectTypes');
 
-var _scopes2 = _interopRequireDefault(_scopes);
+var _objectTypes2 = _interopRequireDefault(_objectTypes);
 
-var _globalScopes = require('./libs/globalScopes');
+var _objects = require('./libs/objects');
 
-var _globalScopes2 = _interopRequireDefault(_globalScopes);
+var _objects2 = _interopRequireDefault(_objects);
+
+var _groupScopes = require('./libs/groupScopes');
+
+var _groupScopes2 = _interopRequireDefault(_groupScopes);
+
+var _userScopes = require('./libs/userScopes');
+
+var _userScopes2 = _interopRequireDefault(_userScopes);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -172,20 +180,36 @@ var DcRbac = function () {
       return this._usersPrivileges;
     }
   }, {
-    key: 'scopes',
+    key: 'objectTypes',
     get: function get() {
-      if (!this._scopes) {
-        this._scopes = new _scopes2.default(this);
+      if (!this._objectTypes) {
+        this._objectTypes = new _objectTypes2.default(this);
       }
-      return this._scopes;
+      return this._objectTypes;
     }
   }, {
-    key: 'globalScopes',
+    key: 'objects',
     get: function get() {
-      if (!this._globalScopes) {
-        this._globalScopes = new _globalScopes2.default(this);
+      if (!this._objects) {
+        this._objects = new _objects2.default(this);
       }
-      return this._globalScopes;
+      return this._objects;
+    }
+  }, {
+    key: 'groupScopes',
+    get: function get() {
+      if (!this._groupScopes) {
+        this._groupScopes = new _groupScopes2.default(this);
+      }
+      return this._groupScopes;
+    }
+  }, {
+    key: 'userScopes',
+    get: function get() {
+      if (!this._userScopes) {
+        this._userScopes = new _userScopes2.default(this);
+      }
+      return this._userScopes;
     }
   }, {
     key: 'actions',

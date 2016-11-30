@@ -12,9 +12,9 @@ var _utils = require('../utils');
 
 var _utils2 = _interopRequireDefault(_utils);
 
-var _scopesAuto = require('./scopes.auto.js');
+var _objectsAuto = require('./objects.auto.js');
 
-var _scopesAuto2 = _interopRequireDefault(_scopesAuto);
+var _objectsAuto2 = _interopRequireDefault(_objectsAuto);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -26,18 +26,18 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 /**
  * Contiene los metodos necesarios para trabajar
- * con la tabla apps.
+ * con la tabla.
  */
-var Scopes = function (_Auto_scopes) {
-  _inherits(Scopes, _Auto_scopes);
+var Objects = function (_Auto_objects) {
+  _inherits(Objects, _Auto_objects);
 
-  function Scopes(owner) {
-    _classCallCheck(this, Scopes);
+  function Objects(owner) {
+    _classCallCheck(this, Objects);
 
-    return _possibleConstructorReturn(this, (Scopes.__proto__ || Object.getPrototypeOf(Scopes)).call(this, owner));
+    return _possibleConstructorReturn(this, (Objects.__proto__ || Object.getPrototypeOf(Objects)).call(this, owner));
   }
 
-  return Scopes;
-}(_scopesAuto2.default);
+  return Objects;
+}(_objectsAuto2.default);
 
-exports.default = Scopes;
+exports.default = Objects;

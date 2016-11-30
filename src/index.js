@@ -14,8 +14,10 @@ import Modules from './libs/modules';
 import Actions from './libs/actions';
 import GroupsPrivileges from './libs/groupsPrivileges';
 import UsersPrivileges from './libs/usersPrivileges';
-import Scopes from './libs/scopes';
-import GlobalScopes from './libs/globalScopes';
+import ObjectTypes from './libs/objectTypes';
+import Objects from './libs/objects';
+import GroupScopes from './libs/groupScopes';
+import UserScopes from './libs/userScopes';
 
 /**
  * La clase DcRbac encapsula los metodos necesario
@@ -100,18 +102,32 @@ export default class DcRbac {
     return this._usersPrivileges;
   }
 
-  get scopes() {
-    if (!this._scopes){
-      this._scopes = new Scopes(this);
+  get objectTypes() {
+    if (!this._objectTypes){
+      this._objectTypes = new ObjectTypes(this);
     }
-    return this._scopes;
+    return this._objectTypes;
   }
 
-  get globalScopes() {
-    if (!this._globalScopes){
-      this._globalScopes = new GlobalScopes(this);
+  get objects() {
+    if (!this._objects){
+      this._objects = new Objects(this);
     }
-    return this._globalScopes;
+    return this._objects;
+  }
+
+  get groupScopes() {
+    if (!this._groupScopes){
+      this._groupScopes = new GroupScopes(this);
+    }
+    return this._groupScopes;
+  }
+
+  get userScopes() {
+    if (!this._userScopes){
+      this._userScopes = new UserScopes(this);
+    }
+    return this._userScopes;
   }
 
   get actions() {

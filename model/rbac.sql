@@ -204,35 +204,59 @@ CREATE TABLE public.groups_privileges(
 ALTER TABLE public.groups_privileges OWNER TO postgres;
 -- ddl-end --
 
--- object: public.scopes | type: TABLE --
--- DROP TABLE IF EXISTS public.scopes CASCADE;
-CREATE TABLE public.scopes(
+-- object: public.object_types | type: TABLE --
+-- DROP TABLE IF EXISTS public.object_types CASCADE;
+CREATE TABLE public.object_types(
+	object_type_id varchar(50) NOT NULL,
+	target_table varchar(50),
+	target_id_field integer,
+	CONSTRAINT pk_object_type PRIMARY KEY (object_type_id)
+
+);
+-- ddl-end --
+ALTER TABLE public.object_types OWNER TO postgres;
+-- ddl-end --
+
+-- object: public.objects | type: TABLE --
+-- DROP TABLE IF EXISTS public.objects CASCADE;
+CREATE TABLE public.objects(
+	object_id bigserial NOT NULL,
+	object_type varchar(50) NOT NULL,
+	target_id integer,
+	object_description varchar(100),
+	CONSTRAINT pk_objects PRIMARY KEY (object_id)
+
+);
+-- ddl-end --
+ALTER TABLE public.objects OWNER TO postgres;
+-- ddl-end --
+
+-- object: public.group_scopes | type: TABLE --
+-- DROP TABLE IF EXISTS public.group_scopes CASCADE;
+CREATE TABLE public.group_scopes(
+	group_id_groups integer NOT NULL,
+	object_id_objects integer NOT NULL,
+	access_grant bool NOT NULL,
+	access_deny bool NOT NULL,
+	CONSTRAINT pk_group_scopes PRIMARY KEY (group_id_groups,object_id_objects)
+
+);
+-- ddl-end --
+ALTER TABLE public.group_scopes OWNER TO postgres;
+-- ddl-end --
+
+-- object: public.user_scopes | type: TABLE --
+-- DROP TABLE IF EXISTS public.user_scopes CASCADE;
+CREATE TABLE public.user_scopes(
 	user_id_users integer NOT NULL,
-	group_id_groups integer NOT NULL,
-	target varchar(50) NOT NULL,
-	target_id varchar(50) NOT NULL,
-	rule_access json,
-	rule_deny json,
-	CONSTRAINT pk_scopes PRIMARY KEY (user_id_users,group_id_groups,target)
+	object_id_objects integer NOT NULL,
+	access_grant bool,
+	access_deny bool NOT NULL,
+	CONSTRAINT pk_user_scopes PRIMARY KEY (user_id_users,object_id_objects)
 
 );
 -- ddl-end --
-ALTER TABLE public.scopes OWNER TO postgres;
--- ddl-end --
-
--- object: public.global_scopes | type: TABLE --
--- DROP TABLE IF EXISTS public.global_scopes CASCADE;
-CREATE TABLE public.global_scopes(
-	group_id_groups integer NOT NULL,
-	target varchar(50) NOT NULL,
-	target_id varchar(50) NOT NULL,
-	rule_access json,
-	rule_deny json,
-	CONSTRAINT pk_global_scopes PRIMARY KEY (group_id_groups,target)
-
-);
--- ddl-end --
-ALTER TABLE public.global_scopes OWNER TO postgres;
+ALTER TABLE public.user_scopes OWNER TO postgres;
 -- ddl-end --
 
 -- object: fk_tokes_users | type: CONSTRAINT --
@@ -312,24 +336,38 @@ REFERENCES public.actions (action_id) MATCH FULL
 ON DELETE NO ACTION ON UPDATE NO ACTION;
 -- ddl-end --
 
--- object: fk_scopes_users | type: CONSTRAINT --
--- ALTER TABLE public.scopes DROP CONSTRAINT IF EXISTS fk_scopes_users CASCADE;
-ALTER TABLE public.scopes ADD CONSTRAINT fk_scopes_users FOREIGN KEY (user_id_users)
+-- object: fk_objects_object_types | type: CONSTRAINT --
+-- ALTER TABLE public.objects DROP CONSTRAINT IF EXISTS fk_objects_object_types CASCADE;
+ALTER TABLE public.objects ADD CONSTRAINT fk_objects_object_types FOREIGN KEY (object_type)
+REFERENCES public.object_types (object_type_id) MATCH FULL
+ON DELETE NO ACTION ON UPDATE NO ACTION;
+-- ddl-end --
+
+-- object: fk_group_scopes_groups | type: CONSTRAINT --
+-- ALTER TABLE public.group_scopes DROP CONSTRAINT IF EXISTS fk_group_scopes_groups CASCADE;
+ALTER TABLE public.group_scopes ADD CONSTRAINT fk_group_scopes_groups FOREIGN KEY (group_id_groups)
+REFERENCES public.groups (group_id) MATCH FULL
+ON DELETE NO ACTION ON UPDATE NO ACTION;
+-- ddl-end --
+
+-- object: fk_group_scopes_objects | type: CONSTRAINT --
+-- ALTER TABLE public.group_scopes DROP CONSTRAINT IF EXISTS fk_group_scopes_objects CASCADE;
+ALTER TABLE public.group_scopes ADD CONSTRAINT fk_group_scopes_objects FOREIGN KEY (object_id_objects)
+REFERENCES public.objects (object_id) MATCH FULL
+ON DELETE NO ACTION ON UPDATE NO ACTION;
+-- ddl-end --
+
+-- object: fk_user_scopes_users | type: CONSTRAINT --
+-- ALTER TABLE public.user_scopes DROP CONSTRAINT IF EXISTS fk_user_scopes_users CASCADE;
+ALTER TABLE public.user_scopes ADD CONSTRAINT fk_user_scopes_users FOREIGN KEY (user_id_users)
 REFERENCES public.users (user_id) MATCH FULL
 ON DELETE NO ACTION ON UPDATE NO ACTION;
 -- ddl-end --
 
--- object: fk_scopes_groups | type: CONSTRAINT --
--- ALTER TABLE public.scopes DROP CONSTRAINT IF EXISTS fk_scopes_groups CASCADE;
-ALTER TABLE public.scopes ADD CONSTRAINT fk_scopes_groups FOREIGN KEY (group_id_groups)
-REFERENCES public.groups (group_id) MATCH FULL
-ON DELETE NO ACTION ON UPDATE NO ACTION;
--- ddl-end --
-
--- object: fk_global_scopes_groups | type: CONSTRAINT --
--- ALTER TABLE public.global_scopes DROP CONSTRAINT IF EXISTS fk_global_scopes_groups CASCADE;
-ALTER TABLE public.global_scopes ADD CONSTRAINT fk_global_scopes_groups FOREIGN KEY (group_id_groups)
-REFERENCES public.groups (group_id) MATCH FULL
+-- object: fk_user_scopes_objects | type: CONSTRAINT --
+-- ALTER TABLE public.user_scopes DROP CONSTRAINT IF EXISTS fk_user_scopes_objects CASCADE;
+ALTER TABLE public.user_scopes ADD CONSTRAINT fk_user_scopes_objects FOREIGN KEY (object_id_objects)
+REFERENCES public.objects (object_id) MATCH FULL
 ON DELETE NO ACTION ON UPDATE NO ACTION;
 -- ddl-end --
 

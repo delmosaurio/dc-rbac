@@ -1,5 +1,5 @@
 'use strict';
-// import Auto_scopes from './scopes.auto.js';
+// import Auto_objects from './objects.auto.js';
 
 Object.defineProperty(exports, "__esModule", {
   value: true
@@ -19,50 +19,46 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var Auto_scopes = function () {
-  function Auto_scopes(owner) {
-    _classCallCheck(this, Auto_scopes);
+var Auto_objects = function () {
+  function Auto_objects(owner) {
+    _classCallCheck(this, Auto_objects);
 
     this.sequelize = owner.sequelize;
     this.models = owner.models;
     this.security = owner.security;
   }
 
-  _createClass(Auto_scopes, [{
+  _createClass(Auto_objects, [{
     key: 'create',
     value: function create(obj) {
-      return _utils2.default.executeModel(this.sequelize, this.models.scopes, 'create', [obj]);
+      return _utils2.default.executeModel(this.sequelize, this.models.objects, 'create', [obj]);
     }
   }, {
     key: 'update',
     value: function update(obj) {
-      var group_id_groups = obj.group_id_groups;
-      delete obj.group_id_groups;
-      var target = obj.target;
-      delete obj.target;
-      var user_id_users = obj.user_id_users;
-      delete obj.user_id_users;
+      var object_id = obj.object_id;
+      delete obj.object_id;
+      var object_type = obj.object_type;
+      delete obj.object_type;
       var where = {
         where: {
-          group_id_groups: group_id_groups,
-          target: target,
-          user_id_users: user_id_users
+          object_id: object_id,
+          object_type: object_type
         }
       };
-      return _utils2.default.executeModel(this.sequelize, this.models.scopes, 'update', [obj, where]);
+      return _utils2.default.executeModel(this.sequelize, this.models.objects, 'update', [obj, where]);
     }
   }, {
     key: 'delete',
     value: function _delete(obj) {
       var params = {
-        group_id_groups: obj.group_id_groups,
-        target: obj.target,
-        user_id_users: obj.user_id_users
+        object_id: obj.object_id,
+        object_type: obj.object_type
       };
       var where = {
         where: params
       };
-      return _utils2.default.executeModel(this.sequelize, this.models.scopes, 'destroy', [where]);
+      return _utils2.default.executeModel(this.sequelize, this.models.objects, 'destroy', [where]);
     }
   }, {
     key: 'findAll',
@@ -74,7 +70,7 @@ var Auto_scopes = function () {
       if (notWhere) {
         where = filters;
       }
-      return _utils2.default.executeModel(this.sequelize, this.models.scopes, 'findAll', [where]);
+      return _utils2.default.executeModel(this.sequelize, this.models.objects, 'findAll', [where]);
     }
   }, {
     key: 'findAndCountAll',
@@ -86,7 +82,7 @@ var Auto_scopes = function () {
       if (notWhere) {
         where = filters;
       }
-      return _utils2.default.executeModel(this.sequelize, this.models.scopes, 'findAndCountAll', [where]);
+      return _utils2.default.executeModel(this.sequelize, this.models.objects, 'findAndCountAll', [where]);
     }
   }, {
     key: 'findOne',
@@ -97,21 +93,20 @@ var Auto_scopes = function () {
       if (notWhere) {
         where = params;
       }
-      return _utils2.default.executeModel(this.sequelize, this.models.scopes, 'findOne', [where]);
+      return _utils2.default.executeModel(this.sequelize, this.models.objects, 'findOne', [where]);
     }
   }, {
     key: 'getById',
-    value: function getById(group_id_groups, target, user_id_users) {
+    value: function getById(object_id, object_type) {
       var params = {
-        group_id_groups: group_id_groups,
-        target: target,
-        user_id_users: user_id_users
+        object_id: object_id,
+        object_type: object_type
       };
       return this.findOne(params);
     }
   }]);
 
-  return Auto_scopes;
+  return Auto_objects;
 }();
 
-exports.default = Auto_scopes;
+exports.default = Auto_objects;

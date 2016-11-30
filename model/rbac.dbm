@@ -3,7 +3,7 @@
 CAUTION: Do not modify this file unless you know what you are doing.
          Unexpected results may occur if the code is changed deliberately.
 -->
-<dbmodel pgmodeler-ver="0.8.2" last-position="0,174" last-zoom="1"
+<dbmodel pgmodeler-ver="0.8.2" last-position="0,87" last-zoom="1"
 	 default-schema="public" default-owner="postgres">
 <database name="rbac">
 </database>
@@ -26,7 +26,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="users">
 	<schema name="public"/>
 	<role name="postgres"/>
-	<position x="20" y="20"/>
+	<position x="20" y="0"/>
 	<column name="user_id" not-null="true">
 		<type name="bigserial"/>
 	</column>
@@ -260,7 +260,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="users_privileges">
 	<schema name="public"/>
 	<role name="postgres"/>
-	<position x="440" y="480"/>
+	<position x="460" y="480"/>
 	<column name="user_id_users" not-null="true">
 		<type name="integer"/>
 	</column>
@@ -299,54 +299,84 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	</constraint>
 </table>
 
-<table name="scopes">
+<table name="object_types">
 	<schema name="public"/>
 	<role name="postgres"/>
-	<position x="20" y="300"/>
-	<column name="user_id_users" not-null="true">
-		<type name="integer"/>
-	</column>
-	<column name="group_id_groups" not-null="true">
-		<type name="integer"/>
-	</column>
-	<column name="target" not-null="true">
+	<position x="40" y="560"/>
+	<column name="object_type_id" not-null="true">
 		<type name="varchar" length="50"/>
 	</column>
-	<column name="target_id" not-null="true">
+	<column name="target_table">
 		<type name="varchar" length="50"/>
 	</column>
-	<column name="rule_access">
-		<type name="json"/>
+	<column name="target_id_field">
+		<type name="varchar" length="50"/>
 	</column>
-	<column name="rule_deny">
-		<type name="json"/>
-	</column>
-	<constraint name="pk_scopes" type="pk-constr" table="public.scopes">
-		<columns names="user_id_users,group_id_groups,target" ref-type="src-columns"/>
+	<constraint name="pk_object_type" type="pk-constr" table="public.object_types">
+		<columns names="object_type_id" ref-type="src-columns"/>
 	</constraint>
 </table>
 
-<table name="global_scopes">
+<table name="objects">
 	<schema name="public"/>
 	<role name="postgres"/>
-	<position x="100" y="440"/>
+	<position x="100" y="460"/>
+	<column name="object_id" not-null="true">
+		<type name="bigserial"/>
+	</column>
+	<column name="object_type" not-null="true">
+		<type name="varchar" length="50"/>
+	</column>
+	<column name="target_id">
+		<type name="integer"/>
+	</column>
+	<column name="object_description">
+		<type name="varchar" length="100"/>
+	</column>
+	<constraint name="pk_objects" type="pk-constr" table="public.objects">
+		<columns names="object_id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="group_scopes">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="60" y="360"/>
 	<column name="group_id_groups" not-null="true">
 		<type name="integer"/>
 	</column>
-	<column name="target" not-null="true">
-		<type name="varchar" length="50"/>
+	<column name="object_id_objects" not-null="true">
+		<type name="integer"/>
 	</column>
-	<column name="target_id" not-null="true">
-		<type name="varchar" length="50"/>
+	<column name="access_grant" not-null="true">
+		<type name="bool"/>
 	</column>
-	<column name="rule_access">
-		<type name="json"/>
+	<column name="access_deny" not-null="true">
+		<type name="bool"/>
 	</column>
-	<column name="rule_deny">
-		<type name="json"/>
+	<constraint name="pk_group_scopes" type="pk-constr" table="public.group_scopes">
+		<columns names="group_id_groups,object_id_objects" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="user_scopes">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="60" y="260"/>
+	<column name="user_id_users" not-null="true">
+		<type name="integer"/>
 	</column>
-	<constraint name="pk_global_scopes" type="pk-constr" table="public.global_scopes">
-		<columns names="group_id_groups,target" ref-type="src-columns"/>
+	<column name="object_id_objects" not-null="true">
+		<type name="integer"/>
+	</column>
+	<column name="access_grant" not-null="true">
+		<type name="bool"/>
+	</column>
+	<column name="access_deny" not-null="true">
+		<type name="bool"/>
+	</column>
+	<constraint name="pk_user_scopes" type="pk-constr" table="public.user_scopes">
+		<columns names="user_id_users,object_id_objects" ref-type="src-columns"/>
 	</constraint>
 </table>
 
@@ -416,22 +446,34 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<columns names="action_id" ref-type="dst-columns"/>
 </constraint>
 
-<constraint name="fk_scopes_users" type="fk-constr" comparison-type="MATCH FULL"
-	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.users" table="public.scopes">
+<constraint name="fk_objects_object_types" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.object_types" table="public.objects">
+	<columns names="object_type" ref-type="src-columns"/>
+	<columns names="object_type_id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_group_scopes_groups" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.groups" table="public.group_scopes">
+	<columns names="group_id_groups" ref-type="src-columns"/>
+	<columns names="group_id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_group_scopes_objects" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.objects" table="public.group_scopes">
+	<columns names="object_id_objects" ref-type="src-columns"/>
+	<columns names="object_id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_user_scopes_users" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.users" table="public.user_scopes">
 	<columns names="user_id_users" ref-type="src-columns"/>
 	<columns names="user_id" ref-type="dst-columns"/>
 </constraint>
 
-<constraint name="fk_scopes_groups" type="fk-constr" comparison-type="MATCH FULL"
-	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.groups" table="public.scopes">
-	<columns names="group_id_groups" ref-type="src-columns"/>
-	<columns names="group_id" ref-type="dst-columns"/>
-</constraint>
-
-<constraint name="fk_global_scopes_groups" type="fk-constr" comparison-type="MATCH FULL"
-	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.groups" table="public.global_scopes">
-	<columns names="group_id_groups" ref-type="src-columns"/>
-	<columns names="group_id" ref-type="dst-columns"/>
+<constraint name="fk_user_scopes_objects" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.objects" table="public.user_scopes">
+	<columns names="object_id_objects" ref-type="src-columns"/>
+	<columns names="object_id" ref-type="dst-columns"/>
 </constraint>
 
 <relationship name="rel_tokens_users" type="relfk"
@@ -474,16 +516,6 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	 dst-table="public.apps"
 	 src-required="false" dst-required="false"/>
 
-<relationship name="rel_scopes_users" type="relfk"
-	 src-table="public.scopes"
-	 dst-table="public.users"
-	 src-required="false" dst-required="false"/>
-
-<relationship name="rel_scopes_groups" type="relfk"
-	 src-table="public.scopes"
-	 dst-table="public.groups"
-	 src-required="false" dst-required="false"/>
-
 <relationship name="rel_groups_privileges_actions" type="relfk"
 	 src-table="public.groups_privileges"
 	 dst-table="public.actions"
@@ -498,9 +530,29 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	</label>
 </relationship>
 
-<relationship name="rel_global_scopes_groups" type="relfk"
-	 src-table="public.global_scopes"
+<relationship name="rel_objects_object_types" type="relfk"
+	 src-table="public.objects"
+	 dst-table="public.object_types"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_group_scopes_groups" type="relfk"
+	 src-table="public.group_scopes"
 	 dst-table="public.groups"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_group_scopes_objects" type="relfk"
+	 src-table="public.group_scopes"
+	 dst-table="public.objects"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_user_scopes_users" type="relfk"
+	 src-table="public.user_scopes"
+	 dst-table="public.users"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_user_scopes_objects" type="relfk"
+	 src-table="public.user_scopes"
+	 dst-table="public.objects"
 	 src-required="false" dst-required="false"/>
 
 </dbmodel>

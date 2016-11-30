@@ -17,8 +17,8 @@ export default function(sequelize, DataTypes) {
       allowNull: false,
       primaryKey: true,
       references: {
-        "model": "users",
-        "key": "user_id"
+        "model": null,
+        "key": null
       },
     },
   }, {

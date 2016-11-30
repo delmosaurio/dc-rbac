@@ -12,9 +12,9 @@ var _utils = require('../utils');
 
 var _utils2 = _interopRequireDefault(_utils);
 
-var _globalScopesAuto = require('./globalScopes.auto.js');
+var _objectTypesAuto = require('./objectTypes.auto.js');
 
-var _globalScopesAuto2 = _interopRequireDefault(_globalScopesAuto);
+var _objectTypesAuto2 = _interopRequireDefault(_objectTypesAuto);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -26,18 +26,18 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 /**
  * Contiene los metodos necesarios para trabajar
- * con la tabla globalScopes.
+ * con la tabla.
  */
-var GlobalScopes = function (_Auto_globalScopes) {
-  _inherits(GlobalScopes, _Auto_globalScopes);
+var ObjectTypes = function (_Auto_objectTypes) {
+  _inherits(ObjectTypes, _Auto_objectTypes);
 
-  function GlobalScopes(owner) {
-    _classCallCheck(this, GlobalScopes);
+  function ObjectTypes(owner) {
+    _classCallCheck(this, ObjectTypes);
 
-    return _possibleConstructorReturn(this, (GlobalScopes.__proto__ || Object.getPrototypeOf(GlobalScopes)).call(this, owner));
+    return _possibleConstructorReturn(this, (ObjectTypes.__proto__ || Object.getPrototypeOf(ObjectTypes)).call(this, owner));
   }
 
-  return GlobalScopes;
-}(_globalScopesAuto2.default);
+  return ObjectTypes;
+}(_objectTypesAuto2.default);
 
-exports.default = GlobalScopes;
+exports.default = ObjectTypes;

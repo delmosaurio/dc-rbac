@@ -2,13 +2,13 @@
 
 import Q from 'q';
 import utils from '../utils';
-import Auto_globalScopes from './globalScopes.auto.js';
+import Auto_userScopes from './userScopes.auto.js';
 
 /**
  * Contiene los metodos necesarios para trabajar
- * con la tabla globalScopes.
+ * con la tabla.
  */
-export default class GlobalScopes extends Auto_globalScopes{
+export default class UserScopes extends Auto_userScopes {
   constructor(owner){
     super(owner);
   }

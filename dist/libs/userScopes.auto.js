@@ -1,5 +1,5 @@
 'use strict';
-// import Auto_globalScopes from './globalScopes.auto.js';
+// import Auto_userScopes from './userScopes.auto.js';
 
 Object.defineProperty(exports, "__esModule", {
   value: true
@@ -19,46 +19,46 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var Auto_globalScopes = function () {
-  function Auto_globalScopes(owner) {
-    _classCallCheck(this, Auto_globalScopes);
+var Auto_userScopes = function () {
+  function Auto_userScopes(owner) {
+    _classCallCheck(this, Auto_userScopes);
 
     this.sequelize = owner.sequelize;
     this.models = owner.models;
     this.security = owner.security;
   }
 
-  _createClass(Auto_globalScopes, [{
+  _createClass(Auto_userScopes, [{
     key: 'create',
     value: function create(obj) {
-      return _utils2.default.executeModel(this.sequelize, this.models.globalScopes, 'create', [obj]);
+      return _utils2.default.executeModel(this.sequelize, this.models.userScopes, 'create', [obj]);
     }
   }, {
     key: 'update',
     value: function update(obj) {
-      var group_id_groups = obj.group_id_groups;
-      delete obj.group_id_groups;
-      var target = obj.target;
-      delete obj.target;
+      var object_id_objects = obj.object_id_objects;
+      delete obj.object_id_objects;
+      var user_id_users = obj.user_id_users;
+      delete obj.user_id_users;
       var where = {
         where: {
-          group_id_groups: group_id_groups,
-          target: target
+          object_id_objects: object_id_objects,
+          user_id_users: user_id_users
         }
       };
-      return _utils2.default.executeModel(this.sequelize, this.models.globalScopes, 'update', [obj, where]);
+      return _utils2.default.executeModel(this.sequelize, this.models.userScopes, 'update', [obj, where]);
     }
   }, {
     key: 'delete',
     value: function _delete(obj) {
       var params = {
-        group_id_groups: obj.group_id_groups,
-        target: obj.target
+        object_id_objects: obj.object_id_objects,
+        user_id_users: obj.user_id_users
       };
       var where = {
         where: params
       };
-      return _utils2.default.executeModel(this.sequelize, this.models.globalScopes, 'destroy', [where]);
+      return _utils2.default.executeModel(this.sequelize, this.models.userScopes, 'destroy', [where]);
     }
   }, {
     key: 'findAll',
@@ -70,7 +70,7 @@ var Auto_globalScopes = function () {
       if (notWhere) {
         where = filters;
       }
-      return _utils2.default.executeModel(this.sequelize, this.models.globalScopes, 'findAll', [where]);
+      return _utils2.default.executeModel(this.sequelize, this.models.userScopes, 'findAll', [where]);
     }
   }, {
     key: 'findAndCountAll',
@@ -82,7 +82,7 @@ var Auto_globalScopes = function () {
       if (notWhere) {
         where = filters;
       }
-      return _utils2.default.executeModel(this.sequelize, this.models.globalScopes, 'findAndCountAll', [where]);
+      return _utils2.default.executeModel(this.sequelize, this.models.userScopes, 'findAndCountAll', [where]);
     }
   }, {
     key: 'findOne',
@@ -93,20 +93,20 @@ var Auto_globalScopes = function () {
       if (notWhere) {
         where = params;
       }
-      return _utils2.default.executeModel(this.sequelize, this.models.globalScopes, 'findOne', [where]);
+      return _utils2.default.executeModel(this.sequelize, this.models.userScopes, 'findOne', [where]);
     }
   }, {
     key: 'getById',
-    value: function getById(group_id_groups, target) {
+    value: function getById(object_id_objects, user_id_users) {
       var params = {
-        group_id_groups: group_id_groups,
-        target: target
+        object_id_objects: object_id_objects,
+        user_id_users: user_id_users
       };
       return this.findOne(params);
     }
   }]);
 
-  return Auto_globalScopes;
+  return Auto_userScopes;
 }();
 
-exports.default = Auto_globalScopes;
+exports.default = Auto_userScopes;

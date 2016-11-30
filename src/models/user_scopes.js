@@ -1,11 +1,11 @@
-// users_privileges
+// user_scopes
 //
 // user_id_users
-// action_id_actions
-// action_grant
-// action_deny
+// object_id_objects
+// access_grant
+// access_deny
 export default function(sequelize, DataTypes) {
-  return sequelize.define('users_privileges', {
+  return sequelize.define('user_scopes', {
     user_id_users: {
       type: DataTypes.INTEGER,
       allowNull: false,
@@ -15,24 +15,24 @@ export default function(sequelize, DataTypes) {
         "key": null
       },
     },
-    action_id_actions: {
+    object_id_objects: {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
-        "model": "actions",
-        "key": "action_id"
+        "model": "objects",
+        "key": "object_id"
       },
     },
-    action_grant: {
+    access_grant: {
       type: DataTypes.BOOLEAN,
-      allowNull: false,
+      allowNull: true,
     },
-    action_deny: {
+    access_deny: {
       type: DataTypes.BOOLEAN,
       allowNull: false,
     },
   }, {
-    tableName: 'users_privileges',
+    tableName: 'user_scopes',
     timestamps: false,
     freezeTableName: true,
   });

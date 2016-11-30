@@ -11,8 +11,8 @@ export default function(sequelize, DataTypes) {
       allowNull: false,
       primaryKey: true,
       references: {
-        "model": "groups",
-        "key": "group_id"
+        "model": null,
+        "key": null
       },
     },
     action_id_actions: {

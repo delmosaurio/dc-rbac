@@ -1,9 +1,11 @@
-// group_has_groups
+// group_scopes
 //
 // group_id_groups
-// has_group_id
+// object_id_objects
+// access_grant
+// access_deny
 export default function(sequelize, DataTypes) {
-  return sequelize.define('group_has_groups', {
+  return sequelize.define('group_scopes', {
     group_id_groups: {
       type: DataTypes.INTEGER,
       allowNull: false,
@@ -13,16 +15,24 @@ export default function(sequelize, DataTypes) {
         "key": null
       },
     },
-    has_group_id: {
+    object_id_objects: {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
-        "model": "groups",
-        "key": "group_id"
+        "model": "objects",
+        "key": "object_id"
       },
     },
+    access_grant: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+    },
+    access_deny: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+    },
   }, {
-    tableName: 'group_has_groups',
+    tableName: 'group_scopes',
     timestamps: false,
     freezeTableName: true,
   });

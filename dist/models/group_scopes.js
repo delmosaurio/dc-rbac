@@ -5,8 +5,8 @@ Object.defineProperty(exports, "__esModule", {
 });
 
 exports.default = function (sequelize, DataTypes) {
-  return sequelize.define('users_privileges', {
-    user_id_users: {
+  return sequelize.define('group_scopes', {
+    group_id_groups: {
       type: DataTypes.INTEGER,
       allowNull: false,
       primaryKey: true,
@@ -15,24 +15,24 @@ exports.default = function (sequelize, DataTypes) {
         "key": null
       }
     },
-    action_id_actions: {
+    object_id_objects: {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
-        "model": "actions",
-        "key": "action_id"
+        "model": "objects",
+        "key": "object_id"
       }
     },
-    action_grant: {
+    access_grant: {
       type: DataTypes.BOOLEAN,
       allowNull: false
     },
-    action_deny: {
+    access_deny: {
       type: DataTypes.BOOLEAN,
       allowNull: false
     }
   }, {
-    tableName: 'users_privileges',
+    tableName: 'group_scopes',
     timestamps: false,
     freezeTableName: true
   });

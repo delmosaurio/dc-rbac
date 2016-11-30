@@ -2,13 +2,13 @@
 
 import Q from 'q';
 import utils from '../utils';
-import Auto_scopes from './scopes.auto.js';
+import Auto_objectTypes from './objectTypes.auto.js';
 
 /**
  * Contiene los metodos necesarios para trabajar
- * con la tabla apps.
+ * con la tabla.
  */
-export default class Scopes extends Auto_scopes{
+export default class ObjectTypes extends Auto_objectTypes{
   constructor(owner){
     super(owner);
   }
